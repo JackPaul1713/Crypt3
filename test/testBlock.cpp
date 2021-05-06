@@ -1,128 +1,174 @@
 #include <iostream>
+#include <vector>
 #include "Block.h"
 
 using namespace std;
 
-void dispCharacters(char* characters, int length)
+//// declarations ////
+// compare:
+void compareBlocks(string description, Block actual, Block expected);
+void compareCharacters(string description, char* actual, char* expected);
+// operators:
+ostream& operator<<(ostream& os, const vector<vector<char*>>& block); // insertion
+bool operator==(const vector<vector<char*>>& block0, const vector<vector<char*>>& block1); // equality
+bool operator!=(const vector<vector<char*>>& block0, const vector<vector<char*>>& block1); // inequality
+
+//// test ////
+void test()
 {
-  cout << "characters:" << endl;
-  for(int i = 0; i < length; i++)
-  {
-    cout << characters[i] << " ";
-  }
-  cout << endl << endl;
-}
-void dispRow(vector<char> row)
-{
-  cout << "row:" << endl;
-  for(int i = 0; i < row.size(); i++)
-  {
-    cout << row[i] << " ";
-  }
-  cout << endl << endl;
-}
-void dispCol(vector<char> col)
-{
-  cout << "col:" << endl;
-  for(int i = 0; i < col.size(); i++)
-  {
-    cout << col[i] << endl;
-  }
+  // title:
+  cout << "BLOCK TESTING" << endl;
   cout << endl;
-}
-void dispBlock(string name, Block block)
-{
-  cout << name << "(size: " << block.getSize() << ", length: " << block.getLength() << ", full: " << block.isFull() << "):" << endl;
-  int length = 0;
-  for(int y = 0; y < block.getSize(); y++)
+
+  //// constructors ////
+  cout << "Testing Constructors..." << endl;
+  // default constructor:
   {
-    for(int x = 0; x < block.getSize(); x++)
+    // test:
+    string name = "default constructor";
+    Block actual;
+    // expected:
+    Block expected;
+    expected.size = 0;
+    expected.length = 0;
+    expected.full = false;
+    // check:
+    compareBlocks(name, actual, expected);
+  }
+  // full constructor:
+  {
+    // test:
+    string name = "full constructor";
+    int size = 4;
+    int pos = 0;
+    int length = 16;
+    char* characters = new char[length];
+    for(int i = 0; i < length; i++) characters[i] = 'a' + i;
+    Block actual(characters, length, pos, size);
+    // expected:
+    Block expected;
+    vector<vector<char*>> block(size);
+    int len = 0;
+    for(int y = 0; y < size; y++)
     {
-      if(length < block.getLength())
-      {
-        cout << *block.getBlock()[y][x] << " ";
-        length++;
-      }
-      else
-      {
-        cout << '-' << " ";
-      }
+      block.at(y) = vector<char*>(size);
+      for(int x = 0; x < size; x++) block.at(y).at(x) = &characters[(y * size) + x];
     }
-    cout << endl;
+    expected.block = block;
+    expected.size = 4;
+    expected.length = 16;
+    expected.full = true;
+    // check:
+    compareBlocks(name, actual, expected);
+    // cleanup:
+    delete[] characters;
   }
-  cout << endl;
+  // full constructor (not full):
+  {
+
+  }
+  // copy constructor:
+  {
+
+  }
+  cout << "tests complete" << endl << endl;
+
+  //// destructor ////
+  cout << "Testing Destructor..." << endl;
+  cout << "tests complete" << endl << endl;
+
+  //// accessors ////
+  cout << "Testing Accessors..." << endl;
+  cout << "tests complete" << endl << endl;
+
+  //// mutators ////
+  cout << "Testing Mutators..." << endl;
+  cout << "tests complete" << endl << endl;
+
+  //// helpers ////
+  cout << "Testing Helpers..." << endl;
+  cout << "tests complete" << endl << endl;
+
+  //// overloads ////
+  cout << "Testing Overloads..." << endl;
+  cout << "tests complete" << endl << endl;
 }
 
 int main()
 {
-  //// settup ////
-  // var:
-  int size;
-  int len;
-  bool full;
-  vector<char> row;
-  vector<char> col;
-  vector<char> stars{'*', '*', '*', '*'};
-  int length = 16;
-  char* characters = new char[length];
-  for(int i = 0; i < length; i++)
+  test();
+  return(1);
+}
+
+//// definitions ////
+// compare:
+void compareBlocks(string description, Block actual, Block expected)
+{
+  if(actual != expected)
   {
-    characters[i] = 'a' + i;
+    cout << "ERROR " << description << "," << endl;
+    if(actual.getBlock() != expected.getBlock())
+    {
+      cout << ".block" << endl;
+      cout << "actual: " << endl;
+      cout << actual.getBlock() << endl;
+      cout << "expected: " << endl;
+      cout << expected.getBlock() << endl;
+    }
+    if(actual.getSize() != expected.getSize())
+    {
+      cout << ".size" << endl;
+      cout << "actual: " << actual.getSize() << ", expected: " << expected.getSize() << endl;
+    }
+    if(actual.getLength() != expected.getLength())
+    {
+      cout << ".length" << endl;
+      cout << "actual: " << actual.getLength() << ", expected: " << expected.getLength() << endl;
+    }
+    if(actual.isFull() != expected.isFull())
+    {
+      cout << ".full" << endl;
+      cout << "actual: " << actual.isFull() << ", expected: " << expected.isFull() << endl;
+    }
   }
-  string pause;
+}
+void compareCharacters(string name, char* actual, char* expected)
+{
 
-  //// testing ////
-  cout << "BLOCK TESTING" << endl << endl;
-  dispCharacters(characters, length);
-  cout << "\benter a string continue: ";
-  cin >> pause;
-  cout << "\n\n\n\n";
-
-  // constructors:
-  cout << "Constructors:" << endl;
-  Block block0; // default
-  Block block1(characters, length, 0, 4); // full
-  Block block2(characters, length, 2, 4); // full, not full
-  Block block3(block1); // copy
-  dispBlock("default", block0);
-  dispBlock("full", block1);
-  dispBlock("full, len-2", block2);
-  dispBlock("copy", block3);
-  cout << "enter a string continue: ";
-  cin >> pause;
-  cout << "\n\n\n\n";
-
-  // accessors:
-  cout << "Accessors:" << endl;
-  size = block1.getSize(); len = block1.getLength(); full = block1.isFull();
-  row = block1.getRow(0);
-  col = block1.getCol(0);
-  cout << "getters: " << size << ", length: " << len << ", full: " << full << endl;
-  dispRow(row);
-  dispCol(col);
-  cout << "enter a string continue: ";
-  cin >> pause;
-  cout << "\n\n\n\n";
-
-  // mutators:
-  cout << "Mutators: " << endl;
-  block0.load(characters, length, 0, 4);
-  dispBlock("load", block0);
-  block0.setRow(0, stars);
-  block0.setCol(0, stars);
-  dispBlock("set r[0], c[0]", block0);
-  dispCharacters(characters, length);
-  block0.swapRows(0, 3);
-  block0.swapCols(0, 3);
-  dispBlock("swap r[0] r[3], c[0] c[3]", block0);
-  dispCharacters(characters, length);
-  cout << "enter a string continue: ";
-  cin >> pause;
-  cout << "\n\n\n\n";
-
-  //// cleanup ////
-  delete[] characters;
-
-  //// return ////
-  return(0);
+}
+// operators:
+ostream& operator<<(ostream& os, const vector<vector<char*>>& block)
+{
+  for(int y = 0; y < block.size(); y++)
+  {
+    cout << "  ";
+    for(int x = 0; x < block.size(); x++)
+    {
+      os << block.at(y).at(x) << " ";
+    }
+    if(y != block.size()-1) os << endl;
+  }
+  return(os);
+}
+bool operator==(const vector<vector<char*>>& block0, const vector<vector<char*>>& block1)
+{
+  if((block0.size() != block1.size()) || ((block0.size() > 0) && (block0.at(0).size() != block1.at(0).size()))) // if size is not equal
+  {
+    return(false);
+  }
+  for(int y = 0; y < block0.size(); y++)
+  {
+    for(int x = 0; x < block0.size(); x++)
+    {
+      if(block0.at(y).at(x) != block1.at(y).at(x))
+      {
+        return(false);
+      }
+    }
+  }
+  return(true);
+}
+bool operator!=(const vector<vector<char*>>& block0, const vector<vector<char*>>& block1)
+{
+  return(!(block0 == block1));
 }
