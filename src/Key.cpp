@@ -54,7 +54,7 @@ void download(string filename, string password) // TODO
 
 }
 
-// mutators:
+//// mutators ////
 void changeLength(int newLength, bool len, bool val, bool loc)
 {
   if(len) lenKey_ = generateLenKey(newLength);
