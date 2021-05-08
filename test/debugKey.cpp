@@ -38,7 +38,7 @@ int main()
   cin >> pause;
   cout << "\n\n\n\n";
   // save: TODO
-  cout << "Save:" << endl;
+  cout << "Saveing:" << endl;
   cout << "no debugging yet\n\n";
   cout << "enter a string continue: ";
   cin >> pause;
