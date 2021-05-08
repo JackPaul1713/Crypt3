@@ -38,6 +38,8 @@ class Block
     Block& operator=(Block block) {swap(*this, block); return(*this);} // assignment
     friend bool operator==(const Block& block0, const Block& block1); // equality
     friend bool operator!=(const Block& block0, const Block& block1); // inequality
+    // debuging:
+    friend void test();
 };
 
 #endif
