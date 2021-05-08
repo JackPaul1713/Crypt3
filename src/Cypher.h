@@ -5,6 +5,8 @@
 #include "Block.h"
 #include "Key.h"
 
+class Key;
+
 class Cypher
 {
   private:
@@ -16,16 +18,16 @@ class Cypher
     std::vector<int> getSortedIndex(const std::vector<char> seg, int pos);
     std::vector<int> getUnsortedIndex(const std::vector<char> seg, int pos);
     // encryption helpers:
-    encryptLen(char* data, int length); // encrypts length
-    decryptLen(char* data, int length); // decrypts length
-    encryptVal(char* data, int length); // encrypts values
-    decryptVal(char* data, int length); // decrypts values
-    encryptPos(char* data, int length); // encrypts position
-    decryptPos(char* data, int length); // decrypts position
-    blockEncryptVal(Block block, int keyPos); // encrypts block values
-    blockDecryptVal(Block block, int keyPos); // decrypts block values
-    blockEncryptPos(Block block, int keyPos); // encrypts block position
-    blockDecryptPos(Block block, int keyPos); // decrypts block position
+    void encryptLen(char*& data, int length); // encrypts length
+    void decryptLen(char*& data, int length); // decrypts length
+    void encryptVal(char* data, int length); // encrypts values
+    void decryptVal(char* data, int length); // decrypts values
+    void encryptPos(char* data, int length); // encrypts position
+    void decryptPos(char* data, int length); // decrypts position
+    void blockEncryptVal(Block block, int keyPos); // encrypts block values
+    void blockDecryptVal(Block block, int keyPos); // decrypts block values
+    void blockEncryptPos(Block block, int keyPos); // encrypts block position
+    void blockDecryptPos(Block block, int keyPos); // decrypts block position
   public:
     // constructors:
     Cypher() {} // default
@@ -39,9 +41,10 @@ class Cypher
     void encryptFile(std::string filename, bool block = false);
     void decryptFile(std::string filename, bool block = false);
     // friends:
-    friend void swap(Cypher& cypher0, Cypher& cypher1) {Key::swap(cypher0.key, cypher1.key);}
+    friend void swap(Cypher& cypher0, Cypher& cypher1) {swap(cypher0.key, cypher1.key);}
+    friend void test();
     // overloads:
-    Cypher& operator=(Cypher cypher) {Cypher::swap(*this, cypher); return(*this);} // assignment
-}
+    Cypher& operator=(Cypher cypher) {swap(*this, cypher); return(*this);} // assignment
+};
 
 #endif

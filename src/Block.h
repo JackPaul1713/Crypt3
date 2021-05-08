@@ -33,8 +33,13 @@ class Block
     void swapCols(int x0, int x1);
     // helpers:
     friend void swap(Block& block0, Block& block1);
+    friend void test();
     // overloads:
     Block& operator=(Block block) {swap(*this, block); return(*this);} // assignment
+    friend bool operator==(const Block& block0, const Block& block1); // equality
+    friend bool operator!=(const Block& block0, const Block& block1); // inequality
+    // debuging:
+    friend void test();
 };
 
 #endif

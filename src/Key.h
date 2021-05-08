@@ -34,10 +34,16 @@ class Key
     std::vector<bool> lenKey() {return(lenKey_);}
     std::vector<char> valKey() {return(valKey_);}
     std::vector<int> locKey() {return(locKey_);}
+    bool lenKeyAt(int pos) {return(lenKey_.at(pos));}
+    char valKeyAt(int pos) {return(valKey_.at(pos));}
+    int locKeyAt(int pos) {return(locKey_.at(pos));}
+    int lenKeyLength() {return(lenKey_.size());}
+    int valKeyLength() {return(valKey_.size());}
+    int locKeyLength() {return(locKey_.size());}
     // mutators:
     void regenerate(int length = -1, bool len = true, bool val = true, bool loc = true);
     // helpers:
-    friend void swap(Key& key0, Key& key1);
+    friend void swap(Key& key0, Key& key1) {key0.key.swap(key1.key);}
     // overloads:
     Key& operator=(Key key) {swap(*this, key); return(*this);}
 };
