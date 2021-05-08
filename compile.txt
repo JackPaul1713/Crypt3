@@ -1,0 +1,15 @@
+FULL
+  DEFAULT: chmod +rw * && g++ -std=c++17 -o crypt3.exe *.cpp
+  WARNINGS: chmod +rw * && g++ -std=c++17 -Wall -Wextra -pedantic -Weffc++ -o crypt3.exe *.cpp
+
+CYPHER
+  DEFAULT:
+  WARNINGS:
+
+KEY
+  DEFAULT:
+  WARNINGS:
+
+BLOCK
+  DEFAULT: chmod +rw * && g++ -std=c++17 -o testblock.exe testBlock.cpp Block.cpp
+  WARNINGS: chmod +rw * && g++ -std=c++17 -Wall -Wextra -pedantic -Weffc++ -o blocktest.exe BlockTest.cpp Block.cpp

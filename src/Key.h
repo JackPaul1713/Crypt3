@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include "Cypher.h"
 
 class Key
 {
@@ -13,9 +12,9 @@ class Key
     std::vector<char> valKey_;
     std::vector<int> locKey_;
     // helpers:
-    char generateRandomBool() {return(rand() % 2);}
-    char generateRandomByte() {return((rand() % 128) - 128);}
-    char generateRandomInt() {return(rand());}
+    bool generateRandomBool() {return(rand() % 2);}
+    char generateRandomChar() {return((rand() % 256) - 128);}
+    int generateRandomInt() {return(rand());}
     std::vector<bool> generateLenKey(int length); // generates length key
     std::vector<char> generateValKey(int length); // generates value key
     std::vector<int> generateLocKey(int length); // generates location key
@@ -24,24 +23,23 @@ class Key
     Key() {} // default
     Key(int length); // generate
     Key(char* characters, int length); // c-string custom
-    Key(string str); // string custom
+    Key(std::string str); // string custom
     Key(const Key& key); // copy
     // deconstructor:
-    ~Key();
+    ~Key() {}
     // save:
-    void upload(string filename, string password);
-    void download(string filename, string password);
+    void upload(std::string filename, std::string password);
+    void download(std::string filename, std::string password);
     // accessors:
     std::vector<bool> lenKey() {return(lenKey_);}
     std::vector<char> valKey() {return(valKey_);}
     std::vector<int> locKey() {return(locKey_);}
     // mutators:
-    void changeLength(int newLength, bool len = true, bool val = true, bool loc = true);
-    void regenerate(bool len = true, bool val = true, bool loc = true);
+    void regenerate(int length = -1, bool len = true, bool val = true, bool loc = true);
     // helpers:
     friend void swap(Key& key0, Key& key1);
     // overloads:
-    Key& operator=(Key key);
+    Key& operator=(Key key) {swap(*this, key); return(*this);}
 };
 
 #endif
