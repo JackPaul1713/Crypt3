@@ -9,9 +9,9 @@ void dispRow(vector<char> row);
 void dispCol(vector<char> col);
 void dispBlock(string name, Block& block);
 
+//// debugging ////
 int main()
 {
-  //// settup ////
   // variables:
   int size;
   int len;
@@ -22,14 +22,13 @@ int main()
   int length = 16;
   char* characters = new char[length];
   for(int i = 0; i < length; i++) characters[i] = 'a' + i; // fill characters
-  string pause;
-
-  //// testing ////
-  cout << "BLOCK DEBUGING" << endl << endl;
+  // title:
+  cout << "BLOCK DEBUGING" << "\n\n";
   dispCharacters(characters, length);
   cout << "\benter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
+
   // constructors:
   cout << "Constructors:" << endl;
   Block block0; // default
@@ -41,7 +40,7 @@ int main()
   dispBlock("full, len-2", block2);
   dispBlock("copy", block3);
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // accessors:
   cout << "Accessors:" << endl;
@@ -52,7 +51,7 @@ int main()
   dispRow(row);
   dispCol(col);
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // mutators:
   cout << "Mutators: " << endl;
@@ -67,18 +66,17 @@ int main()
   dispBlock("swap r[0] r[3], c[0] c[3]", block0);
   dispCharacters(characters, length);
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // overloads:
   cout << "Overloads: " << endl;
   cout << "enter a string exit: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
 
-  //// cleanup ////
+  // cleanup:
   delete[] characters;
-
-  //// return ////
+  // return:
   return(0);
 }
 

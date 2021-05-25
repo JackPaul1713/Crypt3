@@ -7,9 +7,9 @@ using namespace std;
 template<typename type> void dispKey(vector<type> key);
 void dispKey(string name, Key& key);
 
+//// debugging ////
 int main()
 {
-  //// settup ////
   // variables:
   int length = 8;
   char* characters = new char[length];
@@ -19,9 +19,11 @@ int main()
   vector<char> valKey;
   vector<int> locKey;
   string pause;
+  // title:
+  cout << "KEY DEBUGING" << "\n\n";
+  cout << "enter a string continue: ";
+  {string pause; cin >> pause;}
 
-  //// testing ////
-  cout << "KEY DEBUGING" << endl << endl;
   // constructors:
   cout << "Constructors:" << endl;
   Key key0; // default
@@ -81,10 +83,9 @@ int main()
   cin >> pause;
   cout << "\n\n\n\n";
 
-  //// cleanup ////
+  // cleanup:
   delete[] characters;
-
-  //// return ////
+  // return:
   return(0);
 }
 

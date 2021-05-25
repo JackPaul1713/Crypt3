@@ -1,15 +1,15 @@
 COMPILE
   FULL
-    chmod +rw * && g++ -std=c++17 -o crypt3.exe crypt3.cpp Cypher.cpp Key.cpp Block.cpp
+    chmod +rw * && g++ -std=c++17 -o crypt3.exe crypt3.cpp Cypher.cpp Key.cpp Block.cpp random.cpp
 
   CYPHER
-    debug: chmod +rw * && g++ -std=c++17 -o debugcypher.exe debugCypher.cpp Cypher.cpp Key.cpp Block.cpp
-    test: chmod +rw * && g++ -std=c++17 -o testcypher.exe testCypher.cpp Cypher.cpp Key.cpp Block.cpp
+    debug: chmod +rw * && g++ -std=c++17 -o debugcypher.exe debugCypher.cpp Cypher.cpp Key.cpp Block.cpp random.cpp
+    test: chmod +rw * && g++ -std=c++17 -o testcypher.exe testCypher.cpp Cypher.cpp Key.cpp Block.cpp random.cpp
 
   KEY
-    debug: chmod +rw * && g++ -std=c++17 -o debugkey.exe debugKey.cpp Key.cpp
-    test: chmod +rw * && g++ -std=c++17 -o testkey.exe testKey.cpp Key.cpp
-    
+    debug: chmod +rw * && g++ -std=c++17 -o debugkey.exe debugKey.cpp Key.cpp random.cpp
+    test: chmod +rw * && g++ -std=c++17 -o testkey.exe testKey.cpp Key.cpp random.cpp
+
   BLOCK
     debug: chmod +rw * && g++ -std=c++17 -o debugblock.exe debugBlock.cpp Block.cpp
     test: chmod +rw * && g++ -std=c++17 -o testblock.exe testBlock.cpp Block.cpp

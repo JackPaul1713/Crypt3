@@ -2,6 +2,7 @@
 #include <vector>
 // #include "Cypher.h"
 #include "Key.h"
+#include "random.h"
 
 using namespace std;
 
