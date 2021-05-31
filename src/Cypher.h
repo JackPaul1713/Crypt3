@@ -18,8 +18,8 @@ class Cypher
     std::vector<int> getSortedIndex(const std::vector<char> seg, int pos);
     std::vector<int> getUnsortedIndex(const std::vector<char> seg, int pos);
     // encryption helpers:
-    void encryptLen(char*& data, int length); // encrypts length
-    void decryptLen(char*& data, int length); // decrypts length
+    void encryptLen(char*& data, int& length); // encrypts length
+    void decryptLen(char*& data, int& length); // decrypts length
     void encryptVal(char* data, int length); // encrypts values
     void decryptVal(char* data, int length); // decrypts values
     void encryptPos(char* data, int length); // encrypts position

@@ -80,8 +80,6 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
     {
 
     }
-
-
   }
   // add end:
   // add data:
@@ -89,22 +87,6 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
   delete[] data;
   length = newLength;
   data = newData;
-
-  // fill:
-  for(int newDataPos = 0; newDataPos < newLength; newDataPos++) // loop through new data
-  {
-    // cout << "keyPos: " << keyPos << " < size: " << lenKey.size() << endl;
-    if(keyPos < lenKey.size() && lenKey.at(keyPos) == true) // add random
-    {
-      newData[newDataPos] = generateRandomChar();
-    }
-    else if(dataPos < length) // add data
-    {
-      newData[newDataPos] = data[dataPos];
-      dataPos++;
-    }
-    keyPos++;
-  }
 }
 void Cypher::decryptLen(char*& data, int& length) // decrypts length, TODO
 {
