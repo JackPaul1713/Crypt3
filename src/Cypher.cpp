@@ -50,26 +50,39 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0;
   int dataPos = 0;
+  int newDataPos = 0;
+  int begBuff = data * 0.1;
+  int endBuff = beg;
   int newLength;
   char* newData;
   // resize:
-  newLength = length + lenKey.size();
+  newLength = length + begBuff + endBuff;
   newData = new char[newLength];
-  // fill:
-  for(int newDataPos = 0; newDataPos < newLength; newDataPos++) // loop through new data
+  // add begining:
+  while(begBuff > 0)
   {
-    // cout << "keyPos: " << keyPos << " < size: " << lenKey.size() << endl;
-    if(keyPos < lenKey.size() && lenKey.at(keyPos) == true) // add random
+    if(begBuff > (newLength / 2 - newDataPos)) // begining buffer has extra space in the remaining first half of new data
     {
-      newData[newDataPos] = generateRandomChar();
+      if(lenKey.at(keyPos) == true) // if key is true
+      {
+        newData[i] = generateRandomChar(); // add buffer at index
+        begBuff--;
+        keyPos++;
+      }
+      else
+      {
+        newData[i] = data[dataPos];
+        dataPos++;
+      }
+      newDataPos++;
     }
-    else if(dataPos < length) // add data
+    else // begining buffer will completely fill the remaining first half of new data
     {
-      newData[newDataPos] = data[dataPos];
-      dataPos++;
+
     }
-    keyPos++;
   }
+  // add end:
+  // add data:
   // return:
   delete[] data;
   length = newLength;
