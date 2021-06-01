@@ -1,8 +1,8 @@
 #ifndef RANDOM_H
 #define RANDOM_H
 
-bool generateRandomBool(double seed = 0.0);
-bool generateRandomChar(double seed = 0.0);
-bool generateRandomInt(double seed = 0.0);
+bool randomBool(double seed = 0.0);
+bool randomChar(double seed = 0.0);
+bool randomInt(double seed = 0.0);
 
 #endif

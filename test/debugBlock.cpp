@@ -70,9 +70,8 @@ int main()
   cout << "\n\n\n\n";
   // overloads:
   cout << "Overloads: " << endl;
-  cout << "enter a string exit: ";
-  {string pause; cin >> pause;}
-  cout << "\n\n\n\n";
+  cout << "enter a string to exit: ";
+  {string exit; cin >> exit;}
 
   // cleanup:
   delete[] characters;

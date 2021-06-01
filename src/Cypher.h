@@ -15,8 +15,8 @@ class Cypher
     // helpers
     int find(int val, const std::vector<int> nums);
     int findNot(int val, const std::vector<int> nums);
-    std::vector<int> getSortedIndex(const std::vector<char> seg, int pos);
-    std::vector<int> getUnsortedIndex(const std::vector<char> seg, int pos);
+    std::vector<int> getSortedIndex(const std::vector<char> seg, int pos); // gets the indexs of a vector sorted by the vectors values
+    std::vector<int> getUnsortedIndex(const std::vector<char> seg, int pos); // gets the inverse of indexs of a vector sorted by the vectors values
     // encryption helpers:
     void encryptLen(char*& data, int& length); // encrypts length
     void decryptLen(char*& data, int& length); // decrypts length

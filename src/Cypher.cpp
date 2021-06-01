@@ -46,43 +46,37 @@ std::vector<int> Cypher::getUnsortedIndex(const std::vector<char> seg, int pos) 
 //// encryption helpers ////
 void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
 {
+  // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
   // variables:
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0;
   int dataPos = 0;
-  int newDataPos = 0;
-  int begBuff = data * 0.1;
-  int endBuff = beg;
+  int increase = length * key.percentIncrease();
   int newLength;
   char* newData;
   // resize:
-  newLength = length + begBuff + endBuff;
+  newLength = length + increase;
   newData = new char[newLength];
-  // add begining:
-  while(begBuff > 0)
+  // cout << "  new length: " << newLength << endl; // DEBUG
+  // fill:
+  for(int i = 0; i < newLength; i++)
   {
-    if(begBuff > (newLength / 2 - newDataPos)) // begining buffer has extra space in the remaining first half of new data
+    if((lenKey.at(keyPos) == true && increase > 0) || dataPos >= length)
     {
-      if(lenKey.at(keyPos) == true) // if key is true
-      {
-        newData[i] = generateRandomChar(); // add buffer at index
-        begBuff--;
-        keyPos++;
-      }
-      else
-      {
-        newData[i] = data[dataPos];
-        dataPos++;
-      }
-      newDataPos++;
+      newData[i] = randomChar();
+      increase--;
     }
-    else // begining buffer will completely fill the remaining first half of new data
+    else
     {
-
+      newData[i] = data[dataPos];
+      dataPos++;
+    }
+    keyPos++;
+    if(keyPos >= lenKey.size())
+    {
+      keyPos = 0;
     }
   }
-  // add end:
-  // add data:
   // return:
   delete[] data;
   length = newLength;
@@ -90,34 +84,67 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
 }
 void Cypher::decryptLen(char*& data, int& length) // decrypts length, TODO
 {
-
+  // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
+  // variables:
+  vector<bool> lenKey = key.lenKey();
+  int keyPos = 0;
+  int newDataPos = 0;
+  int decrease = (length / (1 + key.percentIncrease())) * key.percentIncrease();
+  int newLength;
+  char* newData;
+  // resize:
+  newLength = length - decrease;
+  newData = new char[newLength];
+  // fill:
+  for(int i = 0; i < length; i++)
+  {
+    if((lenKey.at(keyPos) == true && decrease > 0) || newDataPos >= length)
+    {
+      decrease--;
+    }
+    else
+    {
+      newData[newDataPos] = data[i];
+      newDataPos++;
+    }
+    keyPos++;
+    if(keyPos >= lenKey.size())
+    {
+      keyPos = 0;
+    }
+  }
+  // return:
+  delete[] data;
+  length = newLength;
+  data = newData;
 }
 void Cypher::encryptVal(char* data, int length) // encrypts values
 {
-  // cout << "Cypher::encryptVal(char* data: " << data << ", int length" << length << ")\n"; // DEBUG
+  // cout << "Cypher::encryptVal(char* data: " << data << ", int length: " << length << ")\n"; // DEBUG
   // variables:
+  vector<char> valKey = key.valKey();
   int pos = 0; // data position
   int prevPos = 0; // previous data position
-  if(length > key.valLength()) // if data is longer than the key
+  if(length > valKey.size()) // if data is longer than the key
   {
     // cout << "  longer" << endl; // DEBUG
     // add key:
     // cout << "  begining: " << endl; // DEBUG
     // cout << "  "; // DEBUG
-    for(int i = 0; i < key.valLength(); i++) // loop through key
+    for(int i = 0; i < valKey.size(); i++) // loop through key
     {
       // cout << (int)data[i] << "+" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] += key.valAt(i); // add key to data
+      data[i] += valKey.at(i); // add key to data
     }
     // cout << endl; // DEBUG
-    pos += key.valLength(); // move data position up by key length
+    pos += valKey.size(); // move data position up by key length
                             // keep previous data position at 0
     // add previous:
     // cout << "  core: " << endl;
-    while((pos + key.valLength()) <= length) // while segment exisits
+    while((pos + valKey.size()) <= length) // while segment exisits
     {
       // cout << "  "; // DEBUG
-      for(int i = 0; i < key.valLength(); i++) // loop through key
+      for(int i = 0; i < valKey.size(); i++) // loop through key
       {
         // cout << (int)data[pos] << "+" << (int)data[prevPos] << " "; // DEBUG
         data[pos] += data[prevPos]; // add previous data position to data position
@@ -145,24 +172,25 @@ void Cypher::encryptVal(char* data, int length) // encrypts values
     for(int i = 0; i < length; i++) // loop through remaining data
     {
       // cout << (int)data[i] << "+" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] += key.valAt(i); // add key to data
+      data[i] += valKey.at(i); // add key to data
     }
     // cout << endl; // DEBUG
   }
 }
 void Cypher::decryptVal(char* data, int length) // decrypts values
 {
-  // cout << "Cypher::decryptVal(char* data: " << data << ", int length" << length << ")\n"; // DEBUG
+  // cout << "Cypher::decryptVal(char* data: " << data << ", int length: " << length << ")\n"; // DEBUG
   // variables:
+  vector<char> valKey = key.valKey();
   int pos = length - 1; // data position
-  int prevPos = (length - key.valLength()) - 1; // prevoius data position
+  int prevPos = (length - valKey.size()) - 1; // prevoius data position
   if(prevPos > 0) // if data is longer than key
   {
     // cout << "  longer" << endl; // DEBUG
     // subtract previous:
     // cout << "  end: " << endl; // DEBUG
     // cout << "  "; // DEBUG
-    for(int i = 0; i < (length % key.valLength()); i++) // loop through remaining data (remaining in encryption)
+    for(int i = 0; i < (length % valKey.size()); i++) // loop through remaining data (remaining in encryption)
     {
       // cout << (int)data[pos] << "-" << (int)data[prevPos] << " "; // DEBUG
       data[pos] -= data[prevPos]; // subtract previous data position from data position
@@ -174,7 +202,7 @@ void Cypher::decryptVal(char* data, int length) // decrypts values
     while(prevPos > 0) // while previous segment exisits
     {
       // cout << "  "; // DEBUG
-      for(int i = 0; i < key.valLength(); i++) // loop through key
+      for(int i = 0; i < valKey.size(); i++) // loop through key
       {
         // cout << (int)data[pos] << "-" << (int)data[prevPos] << " "; // DEBUG
         data[pos] -= data[prevPos]; // subtract previous data position from data position
@@ -186,10 +214,10 @@ void Cypher::decryptVal(char* data, int length) // decrypts values
     // subtract key:
     // cout << "  begining: " << endl;
     // cout << "  "; // DEBUG
-    for(int i = 0; i < key.valLength(); i++) // loop through key
+    for(int i = 0; i < valKey.size(); i++) // loop through key
     {
       // cout << (int)data[i] << "-" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] -= key.valAt(i); // subtract key from data
+      data[i] -= valKey.at(i); // subtract key from data
     }
     // cout << endl; // DEBUG
   }
@@ -201,7 +229,7 @@ void Cypher::decryptVal(char* data, int length) // decrypts values
     for(int i = 0; i < length; i++) // loop through remaining data
     {
       // cout << (int)data[i] << "-" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] -= key.valAt(i); // subtract key from data
+      data[i] -= valKey.at(i); // subtract key from data
     }
     // cout << endl; // DEBUG
   }

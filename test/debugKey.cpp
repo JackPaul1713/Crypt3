@@ -18,11 +18,11 @@ int main()
   vector<bool> lenKey;
   vector<char> valKey;
   vector<int> locKey;
-  string pause;
   // title:
   cout << "KEY DEBUGING" << "\n\n";
   cout << "enter a string continue: ";
   {string pause; cin >> pause;}
+  cout << "\n\n\n\n";
 
   // constructors:
   cout << "Constructors:" << endl;
@@ -37,13 +37,13 @@ int main()
   dispKey("string custom", key3);
   dispKey("copy", key4);
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // save: TODO
   cout << "Saveing:" << endl;
   cout << "no debugging yet\n\n";
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // accessors:
   cout << "Accessors:" << endl;
@@ -52,6 +52,7 @@ int main()
   locKey = key1.locKey();
   dispKey("control", key1);
   cout << "accessed values:" << endl;
+  cout << "percent increase: " << key1.percentIncrease() << endl;
   cout << "length key: ";
   dispKey(lenKey);
   cout << "value key: ";
@@ -60,7 +61,7 @@ int main()
   dispKey(locKey);
   cout << endl;
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // mutators:
   cout << "Mutators:" << endl;
@@ -70,7 +71,7 @@ int main()
   key1.regenerate(4);
   dispKey("regenerated, new lengths", key1);
   cout << "enter a string continue: ";
-  cin >> pause;
+  {string pause; cin >> pause;}
   cout << "\n\n\n\n";
   // overloads:
   cout << "Overloads:" << endl;
@@ -78,10 +79,9 @@ int main()
   dispKey("control", key1);
   key0 = key1;
   cout << "empty control = control\n\n";
-  dispKey("updated control", key0);
-  cout << "enter a string exit: ";
-  cin >> pause;
-  cout << "\n\n\n\n";
+  dispKey("updated empty", key0);
+  cout << "enter a string to exit: ";
+  {string exit; cin >> exit;}
 
   // cleanup:
   delete[] characters;
@@ -101,6 +101,7 @@ template<typename type> void dispKey(vector<type> key)
 void dispKey(string name, Key& key)
 {
   cout << "Key, " << name << ":" << endl;
+  cout << "  percent increase: " << key.percentIncrease() << endl;
   cout << "  length key: ";
   dispKey<bool>(key.lenKey());
   cout << "  value key: ";
