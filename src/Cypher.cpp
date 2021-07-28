@@ -16,34 +16,8 @@ void Cypher::decrypt(char* bytes, int length, bool block) // TODO
 {
 
 }
-void Cypher::encryptFile(std::string filename, bool block) // TODO
-{
-
-}
-void Cypher::decryptFile(std::string filename, bool block) // TODO
-{
-
-}
 
 //// helpers ////
-int Cypher::find(int val, const std::vector<int> nums) // TODO
-{
-
-}
-int Cypher::findNot(int val, const std::vector<int> nums) // TODO
-{
-
-}
-std::vector<int> Cypher::getSortedIndex(const std::vector<char> seg, int pos) // TODO
-{
-
-}
-std::vector<int> Cypher::getUnsortedIndex(const std::vector<char> seg, int pos) // TODO
-{
-
-}
-
-//// encryption helpers ////
 void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
 {
   // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
@@ -236,25 +210,107 @@ void Cypher::decryptVal(char* data, int length) // decrypts values
 }
 void Cypher::encryptPos(char* data, int length) // encrypts position, TODO
 {
-
+  // variables:
+  vector<int> posKey = expandPosKey(length);
+  SortedIndex sortedIndex = getSortedIndex(posKey);
 }
 void Cypher::decryptPos(char* data, int length) // decrypts position, TODO
 {
-
+  // variables:
+  vector<int> posKey = expandPosKey(length);
+  SortedIndex sortedIndex = getInvertedSortedIndex(posKey);
 }
-void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
-{
+// void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
+// {
+//
+// }
+// void Cypher::blockDecryptVal(Block block, int keyPos) // decrypts block values, TODO
+// {
+//
+// }
+// void Cypher::blockEncryptPos(Block block, int keyPos) // encrypts block position, TODO
+// {
+//
+// }
+// void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position, TODO
+// {
+//
+// }
 
+vector<int> Cypher::expandPosKey(int length)
+{
+  // variables:
+  int seed = fixedRandom(length);
+  int modIndex = 0; // modify index (index seed is modified by)
+  int begIndex = 1; // begining index
+  vector<int> expantionMods = key.posKey(); // expantion modifiers
+  vector<int> expandedPosKey(lenght); // expanded positon key
+  // expand position key:
+  for(int i = begIndex; i < length; i++) // loop through expanded position key
+  {
+    // modify:
+    seed += expantionMods[modIndex]); // modify seed
+    expantionMods[modIndex] = fixedRandom(seed); // overwrite used modifier
+    modIndex++; // increment modify index
+    if (modIndex > expantionMods.size()) modIndex = 0; // wrap modify index arround
+    // expand:
+    expandedPosKey[i] = fixedRandom(seed); // expand position key
+  }
+  // return:
+  return(expandedPosKey);
 }
-void Cypher::blockDecryptVal(Block block, int keyPos) // decrypts block values, TODO
+SortedIndex Cypher::getSortedIndex(const vector<int> segment)
 {
-
+  // variables:
+  vector<int> values = segment;
+  vector<int> indexes; for(int i = 0; i < size; i++) indexes.at(i) = i;
+  SortedIndex sortedIndex;
+  int min = 0; // minimum index
+  // sort:
+  while(values.size() > 0) // while values has data
+  {
+    // find minimum:
+    for(int i = 0; i < values.size(); i++) // loop through values
+    {
+      if(values[i] < values[min]) // if current value is less than minimum value
+      {
+        min = i; // set new minimum
+      }
+    }
+    sortedIndex.indexs.pushback(indexs[min]); // add minimum index to current index in sorted indexs
+    values.pop(min); // remove previous minimum value
+    indexs.pop(min); // remove previous minimum index
+    min = 0; // reset minimum index
+  }
+  // return:
+  return(sortedIndex);
 }
-void Cypher::blockEncryptPos(Block block, int keyPos) // encrypts block position, TODO
+SortedIndex Cypher::getInvertedSortedIndex(const std::vector<char> seg)
 {
-
-}
-void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position, TODO
-{
-
+  // variables:
+  vector<int> values = segment;
+  vector<int> indexes; for(int i = 0; i < size; i++) indexes.at(i) = i;
+  SortedIndex sortedIndex;
+  int min = 0; // minimum index
+  int cur = 0; // current index
+  // sort:
+  while(values.size() > 0) // while values has data
+  {
+    // find minimum:
+    for(int i = 0; i < values.size(); i++) // loop through values
+    {
+      if(values[i] < values[min]) // if current value is less than minimum value
+      {
+        min = i; // set new minimum
+      }
+    }
+    // set:
+    sortedIndex.indexs.at(indexs[min]) = cur; // add current index to minimum index in sorted indexs
+    values.pop(min); // remove previous minimum value
+    indexs.pop(min); // remove previous minimum index
+    min = 0; // reset minimum index
+    cur++; // increment current index
+  }
+  // return:
+  return(sortedIndex);
 }

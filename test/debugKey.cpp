@@ -28,51 +28,48 @@ int main()
   cout << "Constructors:" << endl;
   Key key0; // default
   Key key1(length); // generate
-  Key key2(characters); // c-string custom
-  Key key3(str); // string custom
-  Key key4(key1); // copy
+  Key key2(characters, length); // root key
+  Key key3(key1); // copy
   dispKey("default", key0);
   dispKey("generate", key1);
   dispKey("c-string custom", key2);
-  dispKey("string custom", key3);
-  dispKey("copy", key4);
+  dispKey("copy", key3);
   cout << "enter a string continue: ";
   {string pause; cin >> pause;}
   cout << "\n\n\n\n";
-  // save: TODO
-  cout << "Saveing:" << endl;
-  cout << "no debugging yet\n\n";
-  cout << "enter a string continue: ";
-  {string pause; cin >> pause;}
-  cout << "\n\n\n\n";
+
   // accessors:
   cout << "Accessors:" << endl;
   lenKey = key1.lenKey();
   valKey = key1.valKey();
-  locKey = key1.locKey();
+  locKey = key1.posKey();
   dispKey("control", key1);
   cout << "accessed values:" << endl;
-  cout << "percent increase: " << key1.percentIncrease() << endl;
+  cout << "percent increase: " << key1.percentInc() << endl;
   cout << "length key: ";
   dispKey(lenKey);
   cout << "value key: ";
   dispKey(valKey);
-  cout << "location key: ";
+  cout << "position key: ";
   dispKey(locKey);
   cout << endl;
   cout << "enter a string continue: ";
   {string pause; cin >> pause;}
   cout << "\n\n\n\n";
+
   // mutators:
   cout << "Mutators:" << endl;
   dispKey("control", key1);
-  key1.regenerate();
+  key1.generateRootKey();
+  key1.generateKeys();
   dispKey("regenerated", key1);
-  key1.regenerate(4);
+  key1.generateRootKey(4);
+  key1.generateKeys();
   dispKey("regenerated, new lengths", key1);
   cout << "enter a string continue: ";
   {string pause; cin >> pause;}
   cout << "\n\n\n\n";
+
   // overloads:
   cout << "Overloads:" << endl;
   dispKey("empty control", key0);
@@ -101,12 +98,12 @@ template<typename type> void dispKey(vector<type> key)
 void dispKey(string name, Key& key)
 {
   cout << "Key, " << name << ":" << endl;
-  cout << "  percent increase: " << key.percentIncrease() << endl;
+  cout << "  percent increase: " << key.percentInc() << endl;
   cout << "  length key: ";
   dispKey<bool>(key.lenKey());
   cout << "  value key: ";
   dispKey<char>(key.valKey());
-  cout << "  location key: ";
-  dispKey<int>(key.locKey());
+  cout << "  position key: ";
+  dispKey<int>(key.posKey());
   cout << endl;
 }
