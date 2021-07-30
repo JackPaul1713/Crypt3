@@ -2,7 +2,7 @@
 #define CYPHER_H
 
 #include <vector>
-#include "Block.h"
+// #include "Block.h"
 #include "Key.h"
 
 class Key;
@@ -11,10 +11,12 @@ struct SortedIndex // indexs of a vector sorted by the vectors values
 {
   public:
     // attributes:
-      vector<int> indexs;
-    // mutators:
-      void burn(int i) {indexs[i] = -1;}
+      std::vector<int> indexes;
+    // accessors:
+      int at(int i) {return(indexes[i]);}
       int findNext();
+    // mutators:
+      void burn(int i) {indexes[i] = -1;}
 };
 
 class Cypher
@@ -37,6 +39,7 @@ class Cypher
     std::vector<int> expandPosKey(int newLength);
     SortedIndex getSortedIndex(const std::vector<int> segment);
     SortedIndex getInvertedSortedIndex(const std::vector<int> segment); // switches sorted indexs with their indexs
+    void sortData(char* data, SortedIndex sortedIndex); // sorts data using a sorted index
   public:
     // constructors:
     Cypher() {} // default

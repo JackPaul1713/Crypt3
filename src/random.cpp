@@ -20,5 +20,5 @@ int randomInt(double seed)
 int fixedRandom(double seed)
 {
   srand(seed);
-  return(rand);
+  return(rand());
 }

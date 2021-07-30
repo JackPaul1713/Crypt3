@@ -1,6 +1,6 @@
 #include <vector>
 #include <iostream> // DEBUG
-#include "Block.h"
+// #include "Block.h"
 #include "Key.h"
 #include "Cypher.h"
 #include "random.h"
@@ -25,7 +25,7 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0;
   int dataPos = 0;
-  int increase = length * key.percentIncrease();
+  int increase = length * key.percentInc();
   int newLength;
   char* newData;
   // resize:
@@ -63,7 +63,7 @@ void Cypher::decryptLen(char*& data, int& length) // decrypts length, TODO
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0;
   int newDataPos = 0;
-  int decrease = (length / (1 + key.percentIncrease())) * key.percentIncrease();
+  int decrease = (length / (1 + key.percentInc())) * key.percentInc();
   int newLength;
   char* newData;
   // resize:
@@ -213,29 +213,35 @@ void Cypher::encryptPos(char* data, int length) // encrypts position, TODO
   // variables:
   vector<int> posKey = expandPosKey(length);
   SortedIndex sortedIndex = getSortedIndex(posKey);
+  // encrypt:
+  sortData(data, sortedIndex);
 }
 void Cypher::decryptPos(char* data, int length) // decrypts position, TODO
 {
   // variables:
   vector<int> posKey = expandPosKey(length);
   SortedIndex sortedIndex = getInvertedSortedIndex(posKey);
+  // decrypt:
+  sortData(data, sortedIndex);
 }
-// void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
-// {
-//
-// }
-// void Cypher::blockDecryptVal(Block block, int keyPos) // decrypts block values, TODO
-// {
-//
-// }
-// void Cypher::blockEncryptPos(Block block, int keyPos) // encrypts block position, TODO
-// {
-//
-// }
-// void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position, TODO
-// {
-//
-// }
+/*
+void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
+{
+
+}
+void Cypher::blockDecryptVal(Block block, int keyPos) // decrypts block values, TODO
+{
+
+}
+void Cypher::blockEncryptPos(Block block, int keyPos) // encrypts block position, TODO
+{
+
+}
+void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position, TODO
+{
+
+}
+*/
 
 vector<int> Cypher::expandPosKey(int length)
 {
@@ -244,12 +250,12 @@ vector<int> Cypher::expandPosKey(int length)
   int modIndex = 0; // modify index (index seed is modified by)
   int begIndex = 1; // begining index
   vector<int> expantionMods = key.posKey(); // expantion modifiers
-  vector<int> expandedPosKey(lenght); // expanded positon key
+  vector<int> expandedPosKey(length); // expanded positon key
   // expand position key:
   for(int i = begIndex; i < length; i++) // loop through expanded position key
   {
     // modify:
-    seed += expantionMods[modIndex]); // modify seed
+    seed += expantionMods[modIndex]; // modify seed
     expantionMods[modIndex] = fixedRandom(seed); // overwrite used modifier
     modIndex++; // increment modify index
     if (modIndex > expantionMods.size()) modIndex = 0; // wrap modify index arround
@@ -263,7 +269,7 @@ SortedIndex Cypher::getSortedIndex(const vector<int> segment)
 {
   // variables:
   vector<int> values = segment;
-  vector<int> indexes; for(int i = 0; i < size; i++) indexes.at(i) = i;
+  vector<int> indexes; for(int i = 0; i < values.size(); i++) indexes.at(i) = i;
   SortedIndex sortedIndex;
   int min = 0; // minimum index
   // sort:
@@ -277,19 +283,19 @@ SortedIndex Cypher::getSortedIndex(const vector<int> segment)
         min = i; // set new minimum
       }
     }
-    sortedIndex.indexs.pushback(indexs[min]); // add minimum index to current index in sorted indexs
-    values.pop(min); // remove previous minimum value
-    indexs.pop(min); // remove previous minimum index
+    sortedIndex.indexes.push_back(indexes[min]); // add minimum index to current index in sorted indexs
+    values.erase(values.begin() + min); // remove previous minimum value
+    indexes.erase(indexes.begin() + min); // remove previous minimum index
     min = 0; // reset minimum index
   }
   // return:
   return(sortedIndex);
 }
-SortedIndex Cypher::getInvertedSortedIndex(const std::vector<char> seg)
+SortedIndex Cypher::getInvertedSortedIndex(const std::vector<int> segment)
 {
   // variables:
   vector<int> values = segment;
-  vector<int> indexes; for(int i = 0; i < size; i++) indexes.at(i) = i;
+  vector<int> indexes; for(int i = 0; i < values.size(); i++) indexes.at(i) = i;
   SortedIndex sortedIndex;
   int min = 0; // minimum index
   int cur = 0; // current index
@@ -305,12 +311,37 @@ SortedIndex Cypher::getInvertedSortedIndex(const std::vector<char> seg)
       }
     }
     // set:
-    sortedIndex.indexs.at(indexs[min]) = cur; // add current index to minimum index in sorted indexs
-    values.pop(min); // remove previous minimum value
-    indexs.pop(min); // remove previous minimum index
+    sortedIndex.indexes.at(indexes[min]) = cur; // add current index to minimum index in sorted indexs
+    values.erase(values.begin() + min); // remove previous minimum value
+    indexes.erase(indexes.begin() + min); // remove previous minimum index
     min = 0; // reset minimum index
     cur++; // increment current index
   }
   // return:
   return(sortedIndex);
+}
+void Cypher::sortData(char* data, SortedIndex sortedIndex)
+{
+  // variables:
+  char value;
+  int index;
+  int burnIndex;
+  // sort data:
+  index = 0;
+  value = data[0];
+  while(sortedIndex.findNext() != -1)
+  {
+    // check index:
+    if(sortedIndex.at(index) == -1) // if index has been burned (already used)
+    {
+      index = sortedIndex.findNext(); // get unused index
+      value = data[index];
+    }
+    // shift index:
+    burnIndex = index; // mark index for burning
+    index = sortedIndex.at(index); // get next index
+    sortedIndex.burn(burnIndex); // burn previous index
+    // sort value:
+    swap(value, data[index]); // swap current value with next value
+  }
 }
