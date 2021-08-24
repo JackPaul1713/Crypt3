@@ -1,54 +1,59 @@
 #include <vector>
 #include <iostream> // DEBUG
-// #include "Block.h"
-#include "Key.h"
 #include "Cypher.h"
+#include "Key.h"
+// #include "Block.h"
 #include "random.h"
+#include "SortedIndex.h"
 
 using namespace std;
 
 //// encryption ////
-void Cypher::encrypt(char* bytes, int length, bool block) // TODO
+void Cypher::encrypt(char* data, int length) // , bool block)
 {
-
+  encryptVal(data, length);
+  encryptPos(data, length);
+  encryptLen(data, length);
 }
-void Cypher::decrypt(char* bytes, int length, bool block) // TODO
+void Cypher::decrypt(char* data, int length) // , bool block)
 {
-
+  decryptLen(data, length);
+  decryptPos(data, length);
+  decryptVal(data, length);
 }
 
 //// helpers ////
-void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
+void Cypher::encryptLen(char*& data, int& length) // encrypts length
 {
   // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
   // variables:
   vector<bool> lenKey = key.lenKey();
-  int keyPos = 0;
-  int dataPos = 0;
-  int increase = length * key.percentInc();
-  int newLength;
+  int keyPos = 0; // position in length key
+  int dataPos = 0; // position in data
+  int increase = length * key.percentInc(); // number of bytes added
   char* newData;
+  int newLength;
   // resize:
   newLength = length + increase;
   newData = new char[newLength];
   // cout << "  new length: " << newLength << endl; // DEBUG
   // fill:
-  for(int i = 0; i < newLength; i++)
+  for(int i = 0; i < newLength; i++) // loop through new data
   {
-    if((lenKey.at(keyPos) == true && increase > 0) || dataPos >= length)
+    if((lenKey[keyPos] == true && increase > 0) || dataPos >= length) // if length key position is true and increase is greater than zero
     {
-      newData[i] = randomChar();
-      increase--;
+      newData[i] = randomChar(); // add new byte
+      increase--; // decrease number of bytes to be added
     }
     else
     {
-      newData[i] = data[dataPos];
-      dataPos++;
+      newData[i] = data[dataPos]; // add exisiting byte
+      dataPos++; // increment data position
     }
-    keyPos++;
+    keyPos++; // increment key position
     if(keyPos >= lenKey.size())
     {
-      keyPos = 0;
+      keyPos = 0; // wrap arround length key
     }
   }
   // return:
@@ -56,35 +61,35 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length, TODO
   length = newLength;
   data = newData;
 }
-void Cypher::decryptLen(char*& data, int& length) // decrypts length, TODO
+void Cypher::decryptLen(char*& data, int& length) // decrypts length
 {
   // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
   // variables:
   vector<bool> lenKey = key.lenKey();
-  int keyPos = 0;
-  int newDataPos = 0;
-  int decrease = (length / (1 + key.percentInc())) * key.percentInc();
+  int keyPos = 0; // position in length key
+  int newDataPos = 0; // position in new data
+  int decrease = (length / (1 + key.percentInc())) * key.percentInc(); // number of bytes removed
   int newLength;
   char* newData;
   // resize:
   newLength = length - decrease;
   newData = new char[newLength];
   // fill:
-  for(int i = 0; i < length; i++)
+  for(int i = 0; i < length; i++) // loop through data
   {
-    if((lenKey.at(keyPos) == true && decrease > 0) || newDataPos >= length)
+    if((lenKey.at(keyPos) == true && decrease > 0) || newDataPos >= length) // if length key position is true and decrease is greater than zero
     {
-      decrease--;
+      decrease--; // decrease the number of bytes to be removed
     }
     else
     {
-      newData[newDataPos] = data[i];
-      newDataPos++;
+      newData[newDataPos] = data[i]; // add byte to new data
+      newDataPos++; // increment new data position
     }
-    keyPos++;
+    keyPos++; // increment key position
     if(keyPos >= lenKey.size())
     {
-      keyPos = 0;
+      keyPos = 0; // wrap arround length key
     }
   }
   // return:
@@ -212,7 +217,11 @@ void Cypher::encryptPos(char* data, int length) // encrypts position, TODO
 {
   // variables:
   vector<int> posKey = expandPosKey(length);
-  SortedIndex sortedIndex = getSortedIndex(posKey);
+  cout << "length: " << length << ", position key length: " << posKey.size() << endl; // TEMP DEBUG
+  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
+  SortedIndex sortedIndex;
+  sortedIndex.sort(posKey);
+  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
   // encrypt:
   sortData(data, sortedIndex);
 }
@@ -220,7 +229,8 @@ void Cypher::decryptPos(char* data, int length) // decrypts position, TODO
 {
   // variables:
   vector<int> posKey = expandPosKey(length);
-  SortedIndex sortedIndex = getInvertedSortedIndex(posKey);
+  SortedIndex sortedIndex;
+  sortedIndex.invertedSort(posKey);
   // decrypt:
   sortData(data, sortedIndex);
 }
@@ -242,7 +252,6 @@ void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position
 
 }
 */
-
 vector<int> Cypher::expandPosKey(int length)
 {
   // variables:
@@ -264,61 +273,6 @@ vector<int> Cypher::expandPosKey(int length)
   }
   // return:
   return(expandedPosKey);
-}
-SortedIndex Cypher::getSortedIndex(const vector<int> segment)
-{
-  // variables:
-  vector<int> values = segment;
-  vector<int> indexes; for(int i = 0; i < values.size(); i++) indexes.at(i) = i;
-  SortedIndex sortedIndex;
-  int min = 0; // minimum index
-  // sort:
-  while(values.size() > 0) // while values has data
-  {
-    // find minimum:
-    for(int i = 0; i < values.size(); i++) // loop through values
-    {
-      if(values[i] < values[min]) // if current value is less than minimum value
-      {
-        min = i; // set new minimum
-      }
-    }
-    sortedIndex.indexes.push_back(indexes[min]); // add minimum index to current index in sorted indexs
-    values.erase(values.begin() + min); // remove previous minimum value
-    indexes.erase(indexes.begin() + min); // remove previous minimum index
-    min = 0; // reset minimum index
-  }
-  // return:
-  return(sortedIndex);
-}
-SortedIndex Cypher::getInvertedSortedIndex(const std::vector<int> segment)
-{
-  // variables:
-  vector<int> values = segment;
-  vector<int> indexes; for(int i = 0; i < values.size(); i++) indexes.at(i) = i;
-  SortedIndex sortedIndex;
-  int min = 0; // minimum index
-  int cur = 0; // current index
-  // sort:
-  while(values.size() > 0) // while values has data
-  {
-    // find minimum:
-    for(int i = 0; i < values.size(); i++) // loop through values
-    {
-      if(values[i] < values[min]) // if current value is less than minimum value
-      {
-        min = i; // set new minimum
-      }
-    }
-    // set:
-    sortedIndex.indexes.at(indexes[min]) = cur; // add current index to minimum index in sorted indexs
-    values.erase(values.begin() + min); // remove previous minimum value
-    indexes.erase(indexes.begin() + min); // remove previous minimum index
-    min = 0; // reset minimum index
-    cur++; // increment current index
-  }
-  // return:
-  return(sortedIndex);
 }
 void Cypher::sortData(char* data, SortedIndex sortedIndex)
 {

@@ -2,22 +2,9 @@
 #define CYPHER_H
 
 #include <vector>
-// #include "Block.h"
 #include "Key.h"
-
-class Key;
-
-struct SortedIndex // indexs of a vector sorted by the vectors values
-{
-  public:
-    // attributes:
-      std::vector<int> indexes;
-    // accessors:
-      int at(int i) {return(indexes[i]);}
-      int findNext();
-    // mutators:
-      void burn(int i) {indexes[i] = -1;}
-};
+// #include "Block.h"
+#include "SortedIndex.h"
 
 class Cypher
 {
@@ -35,10 +22,7 @@ class Cypher
     // void blockDecryptVal(Block block, int keyPos); // decrypts block values
     // void blockEncryptPos(Block block, int keyPos); // encrypts block position
     // void blockDecryptPos(Block block, int keyPos); // decrypts block position
-
     std::vector<int> expandPosKey(int newLength);
-    SortedIndex getSortedIndex(const std::vector<int> segment);
-    SortedIndex getInvertedSortedIndex(const std::vector<int> segment); // switches sorted indexs with their indexs
     void sortData(char* data, SortedIndex sortedIndex); // sorts data using a sorted index
   public:
     // constructors:
@@ -48,11 +32,14 @@ class Cypher
     // destructor:
     ~Cypher() {}
     // encryption:
-    void encrypt(char* bytes, int length, bool block = false);
-    void decrypt(char* bytes, int length, bool block = false);
+    void encrypt(char* bytes, int length); // , bool block = false);
+    void decrypt(char* bytes, int length); // , bool block = false);
     // friends:
     friend void swap(Cypher& cypher0, Cypher& cypher1) {swap(cypher0.key, cypher1.key);}
-    friend void test();
+    friend void debug(); // DEBUG
+    friend void rigCypher(Key key); // TEST
+    friend void compairCypher(Key key); // TEST
+    friend void displayCypher(Cypher cypher); // TEST
     // overloads:
     Cypher& operator=(Cypher cypher) {swap(*this, cypher); return(*this);} // assignment
 };
