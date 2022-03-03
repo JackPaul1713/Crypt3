@@ -22,8 +22,7 @@ class Cypher
     // void blockDecryptVal(Block block, int keyPos); // decrypts block values
     // void blockEncryptPos(Block block, int keyPos); // encrypts block position
     // void blockDecryptPos(Block block, int keyPos); // decrypts block position
-    std::vector<int> expandPosKey(int newLength);
-    void sortData(char* data, SortedIndex sortedIndex); // sorts data using a sorted index
+    std::vector<int> expandPosKey(int newLength); // lengthens position key
   public:
     // constructors:
     Cypher() {} // default
@@ -37,9 +36,8 @@ class Cypher
     // friends:
     friend void swap(Cypher& cypher0, Cypher& cypher1) {swap(cypher0.key, cypher1.key);}
     friend void debug(); // DEBUG
-    friend void rigCypher(Key key); // TEST
-    friend void compairCypher(Key key); // TEST
-    friend void displayCypher(Cypher cypher); // TEST
+    friend int compareEncrypted(Cypher cypher, char* data, int length, char* expectedData, int expectedLength, int type); // TEST
+    friend int compareFinal(char* data, int length, int type); // TEST
     // overloads:
     Cypher& operator=(Cypher cypher) {swap(*this, cypher); return(*this);} // assignment
 };

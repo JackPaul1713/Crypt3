@@ -19,7 +19,9 @@ class SortedIndex // indexs of a vector sorted by the vectors values
     // actions:
     void sort(std::vector<int> values);
     void invertedSort(std::vector<int> values); // sorted indexs switched with their indexs
+    void sortData(char* &data, int length); // sorts data by the sorted index
     // accessors:
+    std::vector<int> indexez() {return(indexes);}
     int at(int i) {return(indexes.at(i));}
     int findNext();
     int size() {return(indexes.size());}
@@ -29,8 +31,6 @@ class SortedIndex // indexs of a vector sorted by the vectors values
     // friends:
     friend void swap(SortedIndex& sortedIndex0, SortedIndex& sortedIndex1) {swap(sortedIndex0.indexes, sortedIndex1.indexes);}
     friend void debug();
-    friend void compairSortedIndex(SortedIndex sortedIndex0, SortedIndex sortedIndex1);
-    friend void displaySortedIndex(SortedIndex sortedIndex, std::string name);
     // overloads:
     SortedIndex& operator=(SortedIndex sortedIndex) {swap(*this, sortedIndex); return(*this);} // assignment
     int& operator[](int i) {return(indexes[i]);} // accessor

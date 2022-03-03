@@ -1,10 +1,12 @@
 #include <vector>
+#include <algorithm>
 #include <iostream> // DEBUG
 #include "Cypher.h"
 #include "Key.h"
 // #include "Block.h"
-#include "random.h"
 #include "SortedIndex.h"
+#include "resources/random.h"
+
 
 using namespace std;
 
@@ -217,22 +219,21 @@ void Cypher::encryptPos(char* data, int length) // encrypts position, TODO
 {
   // variables:
   vector<int> posKey = expandPosKey(length);
-  cout << "length: " << length << ", position key length: " << posKey.size() << endl; // TEMP DEBUG
-  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
   SortedIndex sortedIndex;
-  sortedIndex.sort(posKey);
-  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
+  // values:
+  sortedIndex.sort(posKey); // sort indexes by position key
   // encrypt:
-  sortData(data, sortedIndex);
+  sortedIndex.sortData(data, length); // sort data by indexes
 }
 void Cypher::decryptPos(char* data, int length) // decrypts position, TODO
 {
   // variables:
   vector<int> posKey = expandPosKey(length);
   SortedIndex sortedIndex;
-  sortedIndex.invertedSort(posKey);
+  // values:
+  sortedIndex.invertedSort(posKey); // sort indexes by position key
   // decrypt:
-  sortData(data, sortedIndex);
+  sortedIndex.sortData(data, length); // sort data by indexes
 }
 /*
 void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
@@ -273,29 +274,4 @@ vector<int> Cypher::expandPosKey(int length)
   }
   // return:
   return(expandedPosKey);
-}
-void Cypher::sortData(char* data, SortedIndex sortedIndex)
-{
-  // variables:
-  char value;
-  int index;
-  int burnIndex;
-  // sort data:
-  index = 0;
-  value = data[0];
-  while(sortedIndex.findNext() != -1)
-  {
-    // check index:
-    if(sortedIndex.at(index) == -1) // if index has been burned (already used)
-    {
-      index = sortedIndex.findNext(); // get unused index
-      value = data[index];
-    }
-    // shift index:
-    burnIndex = index; // mark index for burning
-    index = sortedIndex.at(index); // get next index
-    sortedIndex.burn(burnIndex); // burn previous index
-    // sort value:
-    swap(value, data[index]); // swap current value with next value
-  }
 }

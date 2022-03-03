@@ -1,4 +1,5 @@
 #include <vector>
+#include <algorithm>
 #include "SortedIndex.h"
 
 using namespace std;
@@ -6,50 +7,41 @@ using namespace std;
 //// actions ////
 void SortedIndex::sort(vector<int> values)
 {
-  // variables:
-  vector<int> indexes(values.size()); for(int i = 0; i < values.size(); i++) indexes[i] = i;
-  int min = 0; // minimum index
+  // fill:
+  this->indexes.resize(values.size()); // resize indexes
+  for(int i = 0; i < values.size(); i++) indexes[i] = i; // fill indexes {0, 1, 2...}
+
   // sort:
-  while(values.size() > 0) // while values has data
-  {
-    // find minimum:
-    for(int i = 0; i < values.size(); i++) // loop through values
-    {
-      if(values[i] < values[min]) // if current value is less than minimum value
-      {
-        min = i; // set new minimum
-      }
-    }
-    this->indexes.push_back(indexes[min]); // add minimum index to current index of this indexes
-    values.erase(values.begin() + min); // remove previous minimum value
-    indexes.erase(indexes.begin() + min); // remove previous minimum index
-    min = 0; // reset minimum index
-  }
+  std::sort(this->indexes.begin(), this->indexes.begin() + this-> indexes.size(), [&](int n0, int n1) {return(values[n0] < values[n1]);}); // sort indexes by values
 }
 void SortedIndex::invertedSort(vector<int> values)
 {
-  // variables:
-  vector<int> indexes(values.size()); for(int i = 0; i < values.size(); i++) indexes[i] = i;
-  int min = 0; // minimum index
-  int cur = 0; // current index
+  // fill:
+  vector<int> indexes(values.size());
+  for(int i = 0; i < values.size(); i++) indexes[i] = i; // fill indexes {0, 1, 2...}
+
   // sort:
-  while(values.size() > 0) // while values has data
+  std::sort(indexes.begin(), indexes.begin() + indexes.size(), [&](int n0, int n1) {return(values[n0] < values[n1]);}); // sort indexes by values
+
+  // invert:
+  this->indexes.resize(values.size()); // resize indexes
+  for(int i = 0; i < indexes.size(); i++) this->indexes[indexes[i]] = i; // invert indexes
+}
+void SortedIndex::sortData(char* &data, int length)
+{
+  // check:
+  if(length != this->indexes.size())
+    return; // TODO throw error here
+  // variables:
+  char* newData = new char[length];
+  // sort:
+  for(int i = 0; i < length; i++)
   {
-    // find minimum:
-    for(int i = 0; i < values.size(); i++) // loop through values
-    {
-      if(values[i] < values[min]) // if current value is less than minimum value
-      {
-        min = i; // set new minimum
-      }
-    }
-    // set:
-    this->indexes[indexes[min]] = cur; // add current index to minimum index of this indexes
-    values.erase(values.begin() + min); // remove previous minimum value
-    indexes.erase(indexes.begin() + min); // remove previous minimum index
-    min = 0; // reset minimum index
-    cur++; // increment current index
+    newData[i] = data[this->indexes[i]];
   }
+  // return:
+  delete[] data;
+  data = newData;
 }
 
 //// accessors ////

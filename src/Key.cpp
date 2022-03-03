@@ -1,7 +1,7 @@
 #include <string>
 #include <vector>
 #include "Key.h"
-#include "random.h"
+#include "resources/random.h"
 
 using namespace std;
 
