@@ -1,0 +1,8 @@
+FLAGS
+  LESS
+    -w
+    -Wno-unused-parameter
+
+  MORE
+    -Wall -Wextra -pedantic -Weffc++
+    -fsanitize=undefined,address

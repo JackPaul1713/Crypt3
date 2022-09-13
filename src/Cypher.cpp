@@ -1,43 +1,37 @@
 #include <vector>
-#include <iostream> // DEBUG
+#include <algorithm>
 #include "Cypher.h"
 #include "Key.h"
-// #include "Block.h"
-#include "random.h"
 #include "SortedIndex.h"
+#include "resources/random.h"
 
 using namespace std;
 
 //// encryption ////
-void Cypher::encrypt(char* data, int length) // , bool block)
+void Cypher::encrypt(char*& data, int& length)
 {
+  encryptLen(data, length);
   encryptVal(data, length);
   encryptPos(data, length);
-  encryptLen(data, length);
 }
-void Cypher::decrypt(char* data, int length) // , bool block)
+void Cypher::decrypt(char*& data, int& length)
 {
-  decryptLen(data, length);
   decryptPos(data, length);
   decryptVal(data, length);
+  decryptLen(data, length);
 }
 
 //// helpers ////
 void Cypher::encryptLen(char*& data, int& length) // encrypts length
 {
-  // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
   // variables:
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0; // position in length key
   int dataPos = 0; // position in data
   int increase = length * key.percentInc(); // number of bytes added
-  char* newData;
-  int newLength;
+  int newLength = length + increase;
+  char* newData = new char[newLength];
   // resize:
-  newLength = length + increase;
-  newData = new char[newLength];
-  // cout << "  new length: " << newLength << endl; // DEBUG
-  // fill:
   for(int i = 0; i < newLength; i++) // loop through new data
   {
     if((lenKey[keyPos] == true && increase > 0) || dataPos >= length) // if length key position is true and increase is greater than zero
@@ -51,10 +45,7 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length
       dataPos++; // increment data position
     }
     keyPos++; // increment key position
-    if(keyPos >= lenKey.size())
-    {
-      keyPos = 0; // wrap arround length key
-    }
+    if(keyPos >= lenKey.size()) keyPos = 0; // wrap arround length key
   }
   // return:
   delete[] data;
@@ -63,18 +54,14 @@ void Cypher::encryptLen(char*& data, int& length) // encrypts length
 }
 void Cypher::decryptLen(char*& data, int& length) // decrypts length
 {
-  // cout << "Cypher::encryptLen(char*& data: " << data << ", int& length: " << length << ")\n"; // DEBUG
   // variables:
   vector<bool> lenKey = key.lenKey();
   int keyPos = 0; // position in length key
   int newDataPos = 0; // position in new data
   int decrease = (length / (1 + key.percentInc())) * key.percentInc(); // number of bytes removed
-  int newLength;
-  char* newData;
+  int newLength = length - decrease;
+  char* newData = new char[newLength];
   // resize:
-  newLength = length - decrease;
-  newData = new char[newLength];
-  // fill:
   for(int i = 0; i < length; i++) // loop through data
   {
     if((lenKey.at(keyPos) == true && decrease > 0) || newDataPos >= length) // if length key position is true and decrease is greater than zero
@@ -87,10 +74,7 @@ void Cypher::decryptLen(char*& data, int& length) // decrypts length
       newDataPos++; // increment new data position
     }
     keyPos++; // increment key position
-    if(keyPos >= lenKey.size())
-    {
-      keyPos = 0; // wrap arround length key
-    }
+    if(keyPos >= lenKey.size()) keyPos = 0; // wrap arround length key
   }
   // return:
   delete[] data;
@@ -99,203 +83,61 @@ void Cypher::decryptLen(char*& data, int& length) // decrypts length
 }
 void Cypher::encryptVal(char* data, int length) // encrypts values
 {
-  // cout << "Cypher::encryptVal(char* data: " << data << ", int length: " << length << ")\n"; // DEBUG
   // variables:
   vector<char> valKey = key.valKey();
   int pos = 0; // data position
   int prevPos = 0; // previous data position
-  if(length > valKey.size()) // if data is longer than the key
+  // add key:
+  while(pos < length && pos < valKey.size()) // while within key length
   {
-    // cout << "  longer" << endl; // DEBUG
-    // add key:
-    // cout << "  begining: " << endl; // DEBUG
-    // cout << "  "; // DEBUG
-    for(int i = 0; i < valKey.size(); i++) // loop through key
-    {
-      // cout << (int)data[i] << "+" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] += valKey.at(i); // add key to data
-    }
-    // cout << endl; // DEBUG
-    pos += valKey.size(); // move data position up by key length
-                            // keep previous data position at 0
-    // add previous:
-    // cout << "  core: " << endl;
-    while((pos + valKey.size()) <= length) // while segment exisits
-    {
-      // cout << "  "; // DEBUG
-      for(int i = 0; i < valKey.size(); i++) // loop through key
-      {
-        // cout << (int)data[pos] << "+" << (int)data[prevPos] << " "; // DEBUG
-        data[pos] += data[prevPos]; // add previous data position to data position
-        pos++;
-        prevPos++;
-      }
-      // cout << endl; // DEBUG
-    }
-    // cout << "  end: " << endl; // DEBUG
-    // cout << "  "; // DEBUG
-    for(int i = pos; i < length; i++) // loop through remaining data
-    {
-      // cout << (int)data[pos] << "+" << (int)data[prevPos] << " "; // DEBUG
-      data[pos] += data[prevPos]; // add previous data position to data position
-      pos++;
-      prevPos++;
-    }
-    // cout << endl; // DEBUG
+    data[pos] += valKey.at(pos); // add key to data position
+    pos++;
   }
-  else // if data is shorter than key
+  // add previous:
+  while(pos < length) // while remaining data exists
   {
-    // cout << "  shorter" << endl; // DEBUG
-    // add key:
-    // cout << "  "; // DEGUB
-    for(int i = 0; i < length; i++) // loop through remaining data
-    {
-      // cout << (int)data[i] << "+" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] += valKey.at(i); // add key to data
-    }
-    // cout << endl; // DEBUG
+    data[pos] += data[prevPos]; // add previous data position to data position
+    pos++;
+    prevPos++;
   }
 }
 void Cypher::decryptVal(char* data, int length) // decrypts values
 {
-  // cout << "Cypher::decryptVal(char* data: " << data << ", int length: " << length << ")\n"; // DEBUG
   // variables:
   vector<char> valKey = key.valKey();
   int pos = length - 1; // data position
   int prevPos = (length - valKey.size()) - 1; // prevoius data position
-  if(prevPos > 0) // if data is longer than key
+  // subtract previous:
+  while(pos >= valKey.size()) // while beyond length of value key
   {
-    // cout << "  longer" << endl; // DEBUG
-    // subtract previous:
-    // cout << "  end: " << endl; // DEBUG
-    // cout << "  "; // DEBUG
-    for(int i = 0; i < (length % valKey.size()); i++) // loop through remaining data (remaining in encryption)
-    {
-      // cout << (int)data[pos] << "-" << (int)data[prevPos] << " "; // DEBUG
-      data[pos] -= data[prevPos]; // subtract previous data position from data position
-      pos--;
-      prevPos--;
-    }
-    // cout << endl; // DEBUG
-    // cout << "  core: " << endl; // DEBUG
-    while(prevPos > 0) // while previous segment exisits
-    {
-      // cout << "  "; // DEBUG
-      for(int i = 0; i < valKey.size(); i++) // loop through key
-      {
-        // cout << (int)data[pos] << "-" << (int)data[prevPos] << " "; // DEBUG
-        data[pos] -= data[prevPos]; // subtract previous data position from data position
-        pos--;
-        prevPos--;
-      }
-      // cout << endl; // DEBUG
-    }
-    // subtract key:
-    // cout << "  begining: " << endl;
-    // cout << "  "; // DEBUG
-    for(int i = 0; i < valKey.size(); i++) // loop through key
-    {
-      // cout << (int)data[i] << "-" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] -= valKey.at(i); // subtract key from data
-    }
-    // cout << endl; // DEBUG
+    data[pos] -= data[prevPos];
+    pos--;
+    prevPos--;
   }
-  else // if data is shorter than key
+  // subtract key:
+  while(pos >= 0) // while within key length
   {
-    // cout << "  shorter" << endl; // DEBUG
-    // subtract key:
-    // cout << "  "; // DEBUG
-    for(int i = 0; i < length; i++) // loop through remaining data
-    {
-      // cout << (int)data[i] << "-" << (int)key.valAt(i) << " "; // DEBUG
-      data[i] -= valKey.at(i); // subtract key from data
-    }
-    // cout << endl; // DEBUG
+    data[pos] -= valKey.at(pos);
+    pos--;
   }
 }
-void Cypher::encryptPos(char* data, int length) // encrypts position, TODO
+void Cypher::encryptPos(char*& data, int length) // encrypts position
 {
   // variables:
-  vector<int> posKey = expandPosKey(length);
-  cout << "length: " << length << ", position key length: " << posKey.size() << endl; // TEMP DEBUG
-  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
+  vector<int> posKey = this->expandKey(this->key.posKey(), length); // expand position key to fit data
   SortedIndex sortedIndex;
-  sortedIndex.sort(posKey);
-  {string trash; cout << "c to continue: "; cin >> trash;} // TEMP DEBUG
+  // sort:
+  sortedIndex.sort(posKey); // sort indexes by position key
   // encrypt:
-  sortData(data, sortedIndex);
+  sortedIndex.sortData(data, length); // sort data by indexes
 }
-void Cypher::decryptPos(char* data, int length) // decrypts position, TODO
+void Cypher::decryptPos(char*& data, int length) // decrypts position
 {
   // variables:
-  vector<int> posKey = expandPosKey(length);
+  vector<int> posKey = this->expandKey<int>(this->key.posKey(), length); // expand position key to fit data
   SortedIndex sortedIndex;
-  sortedIndex.invertedSort(posKey);
+  // sort:
+  sortedIndex.invertedSort(posKey); // sort indexes by position key
   // decrypt:
-  sortData(data, sortedIndex);
-}
-/*
-void Cypher::blockEncryptVal(Block block, int keyPos) // encrypts block values, TODO
-{
-
-}
-void Cypher::blockDecryptVal(Block block, int keyPos) // decrypts block values, TODO
-{
-
-}
-void Cypher::blockEncryptPos(Block block, int keyPos) // encrypts block position, TODO
-{
-
-}
-void Cypher::blockDecryptPos(Block block, int keyPos) // decrypts block position, TODO
-{
-
-}
-*/
-vector<int> Cypher::expandPosKey(int length)
-{
-  // variables:
-  int seed = fixedRandom(length);
-  int modIndex = 0; // modify index (index seed is modified by)
-  int begIndex = 1; // begining index
-  vector<int> expantionMods = key.posKey(); // expantion modifiers
-  vector<int> expandedPosKey(length); // expanded positon key
-  // expand position key:
-  for(int i = begIndex; i < length; i++) // loop through expanded position key
-  {
-    // modify:
-    seed += expantionMods[modIndex]; // modify seed
-    expantionMods[modIndex] = fixedRandom(seed); // overwrite used modifier
-    modIndex++; // increment modify index
-    if (modIndex > expantionMods.size()) modIndex = 0; // wrap modify index arround
-    // expand:
-    expandedPosKey[i] = fixedRandom(seed); // expand position key
-  }
-  // return:
-  return(expandedPosKey);
-}
-void Cypher::sortData(char* data, SortedIndex sortedIndex)
-{
-  // variables:
-  char value;
-  int index;
-  int burnIndex;
-  // sort data:
-  index = 0;
-  value = data[0];
-  while(sortedIndex.findNext() != -1)
-  {
-    // check index:
-    if(sortedIndex.at(index) == -1) // if index has been burned (already used)
-    {
-      index = sortedIndex.findNext(); // get unused index
-      value = data[index];
-    }
-    // shift index:
-    burnIndex = index; // mark index for burning
-    index = sortedIndex.at(index); // get next index
-    sortedIndex.burn(burnIndex); // burn previous index
-    // sort value:
-    swap(value, data[index]); // swap current value with next value
-  }
+  sortedIndex.sortData(data, length); // sort data by indexes
 }

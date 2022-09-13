@@ -1,24 +1,10 @@
 COMPILE
-  FULL
-    chmod +rw * && g++ -std=c++17 -o crypt3.exe crypt3.cpp Cypher.cpp Key.cpp Block.cpp random.cpp
+  CRYPT3
+    bcc32x -std=c++2a -o crypt3.exe .\src\crypt3.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\interface\Command.cpp .\src\interface\Action.cpp .\src\interface\Crypt.cpp .\src\interface\Encrypt.cpp .\src\interface\Decrypt.cpp .\src\resources\fileops.cpp .\src\resources\random.cpp
 
-  CYPHER
-    debug: chmod +rw * && g++ -std=c++17 -o debugcypher.exe debugCypher.cpp Cypher.cpp Key.cpp random.cpp
-    test: chmod +rw * && g++ -std=c++17 -o testcypher.exe testCypher.cpp Cypher.cpp Key.cpp random.cpp
+  TEST
+    cypher: bcc32x -std=c++2a -o testcypher.exe .\tests\test.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp
+    sortedIndex: bcc32x -std=c++2a -o testsortedindex.exe .\tests\testSortedIndex.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp
 
-  KEY
-    debug: chmod +rw * && g++ -std=c++17 -o debugkey.exe debugKey.cpp Key.cpp random.cpp
-    test: chmod +rw * && g++ -std=c++17 -o testkey.exe testKey.cpp Key.cpp random.cpp
-
-  BLOCK
-    debug: chmod +rw * && g++ -std=c++17 -o debugblock.exe debugBlock.cpp Block.cpp
-    test: chmod +rw * && g++ -std=c++17 -o testblock.exe testBlock.cpp Block.cpp
-
-FLAGS
-  LESS
-    -w
-    -Wno-unused-parameter
-
-  MORE
-    -Wall -Wextra -pedantic -Weffc++
-    -fsanitize=undefined,address
+  DEBUGG
+    cypher: bcc32x -std=c++2a -o debugcypher.exe .\tests\debug.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp
