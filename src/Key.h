@@ -13,13 +13,14 @@ class Key
     std::vector<char> valueKey; // value key
     std::vector<bool> lengthKey; // length key
     float percentIncrease;
-    // helpers:
-    float generatePercentIncreace(); // generates percent increase
+    // mutators:
+    void generateRootKey(int length=-1); // randomly generates a root key, TEST
   public:
     // constructors:
     Key(): rootKey(), positionKey(), valueKey(), lengthKey(), percentIncrease(0) {} // default
-    Key(int length); // generate
+    Key(int length); // generate, TEST
     Key(char* characters, int length); // characters
+    Key(std::vector<char> rootkey, int length): rootKey(rootkey), positionKey(), valueKey(), lengthKey(), percentIncrease(0) {generateKeys();} // vector, TEST
     Key(const Key& key); // copy
     // deconstructor:
     ~Key() {}
@@ -29,8 +30,7 @@ class Key
     std::vector<char>& valKey() {return(valueKey);}
     std::vector<int>& posKey() {return(positionKey);}
     // mutators:
-    void generateRootKey(int length=-1);
-    void generateKeys(bool generatePosKey=true, bool generateValKey=true, bool generateLenKey=true, bool generatePercentIncrease=true);
+    void generateKeys(); // generates keys from rootkey
     // helpers:
     friend void swap(Key& key0, Key& key1);
     // overloads:

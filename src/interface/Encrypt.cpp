@@ -1,38 +1,18 @@
-#include <fileapi.h>
-#include <vector>
 #include <string>
-#include <cstrinf>
 #include "Encrypt.h"
-#include "../resources/file.h"
+#include "Cypher.h"
+#include "Key.h"
 
-void Encrypt::execute() // TODO
+void Encrypt::crypt(char*& data, int& dataLength, string name, FILETIME created, FILETIME modified, FILETIME accessed, char* key, int keyLength)
 {
   // variables:
-  char* data;
-  char* key;
-  FILETIME created;
-  FILETIME modified;
-  FILETIME accessed;
-  FILETIME zero; zero.dwHighDateTime = 1; zero.dwLowDateTime = 1;
-
-  // get properties
+  Key enkey(key, keyLength); // encryption key
+  Cypher cypher(enkey);
+  // process:
   if(full)
   {
-    getFileTimes(this->data, created, modified, accessed); // get file times
-    setFileTimes(this->data, zero, zero, zero); // set file times to min values
+    condenceData(data, dataLength, name, created, modified, accessed);
   }
-
-  // get data:
-  data = readFile(this->data); // read data from file
-  if(!tkey) // if text key is false
-  {
-    key = readFile(this->key); // read key from file
-  }
-  else // if text key is true
-  {
-    strcpy(key, this->key.c_str); // copy characters from string to cstring
-  }
-
-  // crypt
-  run(data, key); // encrypt or decrypt data
+  // encrypt:
+  cypher.encrypt(data, dataLength);
 }

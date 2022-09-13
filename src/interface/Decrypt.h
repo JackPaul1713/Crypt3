@@ -4,19 +4,21 @@
 #include <string>
 #include "Crypt.h"
 
-class Decrypt: pubic Crypt
+class Decrypt: public Crypt
 {
+  protected:
+    // helpers:
+    void crypt(char*& data, int& dataLength, std::string name, FILETIME created, FILETIME modified, FILETIME accessed, char* key, int keyLength);
   public:
     // constructors:
-    Encrypt() {} // default
+    Decrypt() {initiate();} // default
+    Decrypt(const Decrypt& decrypt); // copy
     // destructor:
-    ~Encrypt() {}
-    // actions:
-    void execute();
+    ~Decrypt() {}
     // friends:
-      // TODO
+    friend void swap(Decrypt d0, Decrypt d1);
     // overloads:
-      // TODO
+    Decrypt& operator=(Decrypt decrypt) {swap(*this, decrypt); return(*this);} // assignment
 };
 
 #endif

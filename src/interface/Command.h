@@ -2,27 +2,28 @@
 #define COMMAND_H
 
 #include <vector>
+#include <string>
 #include "Action.h"
 
 class Command
 {
   protected:
     // attributes:
-    const string name;
-    const vector<Action> actions;
-    string action;
-    vector<string> values;
-    vector<string> flags;
+    std::string name; // command name
+    std::vector<Action*> actions; // command actions
+    Action* selectedAction; // selected action
     // helpers:
-    void checkAction();
+    virtual void initiate() = 0; // loads preset data
+    void process(std::vector<std::string>& arguments); // processes and loads data
+    void reset(); // resets processed data
   public:
+    // constructors:
+    Command() {} // default
+    Command(const Command& command): name(command.name), actions(command.actions), selectedAction(command.selectedAction) {} // copy
     // actions:
-    void reset();
-    void process(vector<string> arguments);
-    void execute();
+    void execute(std::vector<std::string> arguments); // executes command
     // accessors:
-    void getName() {return(name);}
-    void getAction();
+    std::string getName() {return(name);}
 };
 
 #endif

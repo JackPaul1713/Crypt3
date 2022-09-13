@@ -1,10 +1,10 @@
 COMPILE
   CRYPT3
-    bcc32x -std=c++2a -o crypt3.exe crypt3.cpp Cypher.cpp Key.cpp SortedIndex.cpp .\interface\Command.cpp .\interface\Action.cpp .\interface\Crypt.cpp .\interface\Encrypt.cpp .\interface\Decrypt.cpp .\interface\Generate.cpp .\resources\fileops.cpp .\resources\random.cpp
+    bcc32x -std=c++2a -o crypt3.exe .\src\crypt3.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\interface\Command.cpp .\src\interface\Action.cpp .\src\interface\Crypt.cpp .\src\interface\Encrypt.cpp .\src\interface\Decrypt.cpp .\src\resources\fileops.cpp .\src\resources\random.cpp
 
   TEST
-    cypher: bcc32x -std=c++2a -o testcypher.exe ..\tests\test.cpp Cypher.cpp Key.cpp SortedIndex.cpp .\resources\random.cpp
-    sortedIndex: bcc32x -std=c++2a -o testsortedindex.exe ..\tests\testSortedIndex.cpp SortedIndex.cpp .\resources\random.cpp
+    cypher: bcc32x -std=c++2a -o testcypher.exe .\tests\test.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp
+    sortedIndex: bcc32x -std=c++2a -o testsortedindex.exe .\tests\testSortedIndex.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp
 
   DEBUGG
-    cypher: bcc32x -std=c++2a -o debugcypher.exe ..\tests\debug.cpp Cypher.cpp Key.cpp SortedIndex.cpp .\resources\random.cpp
+    cypher: bcc32x -std=c++2a -o debugcypher.exe .\tests\debug.cpp .\src\Cypher.cpp .\src\Key.cpp .\src\SortedIndex.cpp .\src\resources\random.cpp

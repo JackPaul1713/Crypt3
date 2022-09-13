@@ -1,32 +1,18 @@
-#include <vector>
 #include <string>
-#include <cstrinf>
 #include "Encrypt.h"
-#include "../resources/file.h"
+#include "Cypher.h"
+#include "Key.h"
 
-void Encrypt::execute() // TODO
+void Encrypt::crypt(char*& data, int& dataLength, string name, FILETIME created, FILETIME modified, FILETIME accessed, char* key, int keyLength)
 {
   // variables:
-  char* data;
-  char* key;
-
-  // edit file properies
+  Key dekey(key, keyLength); // decryption key
+  Cypher cypher(dekey);
+  // encrypt:
+  cypher.decrypt(data, dataLength);
+  // process:
   if(full)
   {
-
+    expandData(data, dataLength, name, created, modified, accessed);
   }
-
-  // get data:
-  data = readFile(this->data); // read data from file
-  if(!tkey) // if text key is false
-  {
-    key = readFile(this->key); // read key from file
-  }
-  else // if text key is true
-  {
-    strcpy(this-key, key); // copy characters from string to cstring
-  }
-
-  // crypt
-  run(data, key); // encrypt or decrypt data
 }

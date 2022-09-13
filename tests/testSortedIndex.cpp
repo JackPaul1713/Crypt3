@@ -46,7 +46,7 @@ void compairSortedIndex(SortedIndex sortedIndex0, vector<int> indexes)
 void displaySortedIndex(SortedIndex sortedIndex, string name)
 {
   cout << "  " << name << ": " << endl;
-  cout << "    to:   ";
+  cout << "    from: ";
   for(int i = 0; i < sortedIndex.size(); i++)
   {
     cout << sortedIndex[i];
@@ -54,7 +54,7 @@ void displaySortedIndex(SortedIndex sortedIndex, string name)
     else if(sortedIndex[i] < 100) cout << "  ";
     else if(sortedIndex[i] < 1000) cout << " ";
   }
-  cout << "\n    from: ";
+  cout << "\n    to:   ";
   for(int i = 0; i < sortedIndex.size(); i++)
   {
     cout << i;

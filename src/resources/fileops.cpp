@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <fileapi.h>
+#include <filesystem>
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
@@ -8,6 +9,20 @@
 
 using namespace std;
 
+void valid(std::string file)
+{
+  return;
+}
+void exists(std::string file)
+{
+  // std::ifstream check(file);
+  // if (!check)
+  // {
+  //   return false;
+  // }
+  // return true;
+  return;
+}
 int fileLength(string file)
 {
   // variables:

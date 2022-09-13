@@ -18,14 +18,14 @@ char* generateData(int length) // generates random data
   return(data);
 }
 
-int compareEncrypted(Cypher cypher, char* data, int length, char* expectedData, int expectedLength, int type) // encrypts data and compares encrypted data to expected encrypted data
+int compareModified(Cypher cypher, char* data, int length, char* expectedData, int expectedLength, int type) // modifies(encrypts or decrypts) data and compares modified data to expected encrypted data, TODO
 {
-
+  return(0);
 }
 int compareFinal(char* data, int length, int type) // encrypts and decrypts data and compares decrypted data to original data
 {
   // variables:
-  Cypher cypher(Key(length / 2));
+  Cypher cypher(Key(rand() % 91 + 10));
   char* expectedData = new char[length];
   for(int i = 0; i < length; i++) {expectedData[i] = data[i];} // copy over original data
   bool expected = true;
@@ -79,8 +79,8 @@ int compareFinal(char* data, int length, int type) // encrypts and decrypts data
 int main()
 {
   // variables:
-  bool encryptedTests = false;
-  int finalTests = 10; // number of final tests to run
+  bool modifiedTests = true;
+  int finalTests = 1000; // number of final tests to run
   bool testLenEncryption = true;
   bool testValEncryption = true;
   bool testPosEncryption = true;
@@ -90,9 +90,9 @@ int main()
   if(testLenEncryption)
   {
     cout << "Length Encryption Tests: " << endl;
-    if(encryptedTests)
+    if(modifiedTests)
     {
-      cout << "  Encrypted Tests: " << endl;
+      cout << "  Modified Tests: " << endl;
     }
     if(finalTests)
     {
@@ -113,12 +113,12 @@ int main()
   }
 
   // value tests:
-  if(testLenEncryption)
+  if(testValEncryption)
   {
     cout << "Value Encryption Tests: " << endl;
-    if(encryptedTests)
+    if(modifiedTests)
     {
-      cout << "  Encrypted Tests: " << endl;
+      cout << "  Modified Tests: " << endl;
     }
     if(finalTests)
     {
@@ -142,9 +142,9 @@ int main()
   if(testPosEncryption)
   {
     cout << "Position Encryption Tests: " << endl;
-    if(encryptedTests)
+    if(modifiedTests)
     {
-      cout << "  Encrypted Tests: " << endl;
+      cout << "  Modified Tests: " << endl;
     }
     if(finalTests)
     {
@@ -168,9 +168,9 @@ int main()
   if(testFullEncryption)
   {
     cout << "Full Encryption Tests: " << endl;
-    if(encryptedTests)
+    if(modifiedTests)
     {
-      cout << "  Encrypted Tests: " << endl;
+      cout << "  Modified Tests: " << endl;
     }
     if(finalTests)
     {

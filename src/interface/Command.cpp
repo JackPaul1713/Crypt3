@@ -3,60 +3,54 @@
 #include "Command.h"
 #include "Action.h"
 
+using namespace std;
+
 //// actions ////
-void Command::reset() // TODO
+void Command::execute(std::vector<string> arguments)
 {
-
-}
-void Command::process(vector<string> arguments)
-{
-  // set action:
-  action = arguments[0];
-  checkAction(); // check action is valid
-
-  // set values and flags:
-  for(int i = 1; i < arguments.size(); i++) // loop through arguments
-  {
-    if(arguments[i][0] == '-') // if argument is a flag
-    {
-      arguments[i].erase(remove(arguments[i].begin(), arguments[i].end(), '-'), arguments[i].end()); // remove dashes
-      flags.push_back(arguments[i]); // add argument to flags
-    }
-    else // if argument is a value
-    {
-      values.push_back(argument[i]); // add argument to values
-    }
-  }
-
-  // process action:
-  getAction().process(values, flags);
-}
-void Command::execute() // TODO
-{
-  getAction().execute();
-}
-
-//// accessors ////
-Action Command::getAction()
-{
-  for(int i = 0; i < actions.size(); i++) // loop through actions
-  {
-    if(actions[i].getName() == action) // if name matches action
-    {
-      return(actions[i]);
-    }
-  }
+  this->process(arguments); // processes and loads data
+  this->selectedAction->execute(arguments); // executes action
+  this->reset(); // resets processed data
 }
 
 //// helpers ////
-void Command::checkAction()
+void Command::process(vector<string>& arguments)
 {
+  // variables:
+  string name; // action name
+  bool found = false; // argument is found
+  string error; // error message
+  // find name:
+  for(int i = 0; i < arguments.size(); i++) // loop through command arguments
+  {
+    if(arguments[i][0] == '/') // if argument is an action name
+    {
+      if(found) // catch
+      {
+        error = "too many actions"
+        throw std::runtime_error(error);
+      }
+      name = argument[i];
+      name.erase(remove(name.begin(), name.end(), '/'), name.end()); // remove slash
+      arguments.erase(i); i--; // remove used argument
+      found = true;
+    }
+  }
+  if(!found) // catch
+  {
+    error = "no action";
+    throw std::runtime_error(error);
+  }
+  // find action:
   for(int i = 0; i < actions.size(); i++) // loop through actions
   {
-    if(actions[i].getName() == action) // if name matches action
+    if(this->actions[i].getName() == name || this->actions[i].getLetter() == name) // if action name matches action
     {
+      this->selectedAction = this->actions[i]; // select action
       return;
     }
   }
-  throw std::runtime_error("invalid action");
+  // catch:
+  error = "invalid action: " + name;
+  throw std::runtime_error(error);
 }
