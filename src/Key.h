@@ -20,7 +20,7 @@ class Key
     Key(): rootKey(), positionKey(), valueKey(), lengthKey(), percentIncrease(0) {} // default
     Key(int length); // generate, TEST
     Key(char* characters, int length); // characters
-    Key(std::vector<char> rootkey, int length): rootKey(rootkey), positionKey(), valueKey(), lengthKey(), percentIncrease(0) {generateKeys();} // vector, TEST
+    Key(std::vector<char> rootkey): rootKey(rootkey), positionKey(), valueKey(), lengthKey(), percentIncrease(0) {generateKeys();} // vector, TEST
     Key(const Key& key); // copy
     // deconstructor:
     ~Key() {}

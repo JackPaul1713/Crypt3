@@ -15,7 +15,7 @@ class Command
     // helpers:
     virtual void initiate() = 0; // loads preset data
     void process(std::vector<std::string>& arguments); // processes and loads data
-    void reset(); // resets processed data
+    void reset() {this->selectedAction->reset();} // resets processed data
   public:
     // constructors:
     Command() {} // default

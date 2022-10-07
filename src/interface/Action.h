@@ -18,12 +18,12 @@ class Action
     std::string getName() {return(name);}
     char getLetter() {return(letter);}
     // actions:
-    virtual void execute(std::vector<std::string> arguments); // executes action
+    virtual void execute(std::vector<std::string> arguments) = 0; // executes action
     // helpers:
-    virtual void initiate(); // loads preset data
+    virtual void initiate() = 0; // loads preset data
     void process(std::vector<std::string>& arguments); // processes and loads data
-    virtual void activate(); // activates loaded data
-    virtual void reset(); // resets processed data
+    virtual void activate() = 0; // activates loaded data
+    virtual void reset() = 0; // resets processed data
     // friends:
     friend class Command;
 };

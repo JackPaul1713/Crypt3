@@ -15,6 +15,8 @@ class Decrypt: public Crypt
     Decrypt(const Decrypt& decrypt); // copy
     // destructor:
     ~Decrypt() {}
+    // helpers:
+    void initiate() {this->name="decrypt"; this->letter='d'; Crypt::initiate();}
     // friends:
     friend void swap(Decrypt d0, Decrypt d1);
     // overloads:

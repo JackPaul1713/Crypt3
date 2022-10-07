@@ -37,12 +37,12 @@ class Cypher
     Cypher& operator=(Cypher cypher) {swap(*this, cypher); return(*this);} // assignment
 };
 
-template<class numb> vector<numb> Cypher::expandKey(vector<numb> key, int newLength) // lengthens a key
+template<class numb> std::vector<numb> Cypher::expandKey(std::vector<numb> key, int newLength) // lengthens a key
 {
   // variables:
   int length = key.size();
   numb modifier = newLength; // modifier to generate new key values
-  vector<int> expandedKey(newLength); // expanded key
+  std::vector<int> expandedKey(newLength); // expanded key
   for(int i = 0; i < length && i < newLength; i++) expandedKey[i] = key[i]; // copy key to expanded key
   // expand key:
   for(int i = length; i < newLength; i++) // loop through expanded key's empty values

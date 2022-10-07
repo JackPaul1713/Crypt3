@@ -14,14 +14,14 @@ class Crypt: public Action
     void downloadData(std::string file, char* data, int length, std::string name, FILETIME created, FILETIME modified, FILETIME accessed); // downloads file data
   protected:
     // attributes:
-    std::string inputFile = "";
-    std::string outputFile = "";
-    std::string key = "";
-    bool directory = false; // directory encryption
-    bool full = false; // full file cryption
-    bool ghost = false; // display only
-    bool output = false; // output location, no overwrite
-    bool tkey = false; // use text key
+    std::string inputFile;
+    std::string outputFile;
+    std::string key;
+    bool directory; // directory encryption
+    bool full; // full file cryption
+    bool ghost; // display only
+    bool output; // output location, no overwrite
+    bool tkey; // use text key
     // actions:
     void execute(std::vector<std::string> arguments); // executes action
     // helpers:
