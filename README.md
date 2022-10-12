@@ -2,7 +2,7 @@
 Command line extension for encrypting and decrypting the length, values, and positions of data on the Windows OS.
 
 ## Description:
-Crypt3 is a command line extension for encrypting and decrypting data. The crypt3 cypher uses three algorithms to encrypt data attempting to completely obfuscate the data. These functions are split up to encrypt and decrypt length, values, or positions of data.
+Crypt3 is a command line extension for encrypting and decrypting data. The crypt3 cypher uses three algorithms to encrypt data attempting to completely obfuscate the data. These functions are split up to encrypt and decrypt the length, values, or positions of data.
 
 The length algorithm scatters a variable number of bytes into the data. The value algorithm sums bytes with the data. The position algorithm sorts the data by a key.
 
