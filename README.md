@@ -12,5 +12,5 @@ These functions hide the true length of the file, introduce the possibility of f
 Save the crypt3 executable, and add it's location to the path enviroment variable.
 
 ## Usage:
-Crypt3 /[action] [file] [keyFile] -[flags...]
+Crypt3 /[action] [file] [keyFile] -[flags...] 
 Crypt3 /[action] [fromFile] [toFile] [keyFile] -o -[flags...]
