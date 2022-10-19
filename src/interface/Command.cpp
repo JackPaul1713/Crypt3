@@ -18,6 +18,7 @@ void Command::execute(std::vector<string> arguments)
 //// helpers ////
 void Command::process(vector<string>& arguments)
 {
+  cout << "  processing arguments" << endl; // DEBUG
   // variables:
   string name; // action name
   bool found = false; // argument is found
@@ -35,7 +36,7 @@ void Command::process(vector<string>& arguments)
         throw std::runtime_error(error);
       }
       name = arguments[i];
-      cout << "action name found: " << arguments[i] << endl; // DEBUG
+      cout << "    action name found: " << arguments[i] << endl; // DEBUG
       name.erase(remove(name.begin(), name.end(), '/'), name.end()); // remove slash
       arguments.erase(arguments.begin()+i); i--; // remove used argument
       found = true;
@@ -53,7 +54,7 @@ void Command::process(vector<string>& arguments)
     if(this->actions[i]->getName() == name || (this->actions[i]->getLetter() == name[0] && name.length() == 1)) // if action name matches action
     {
       this->selectedAction = this->actions[i]; // select action
-      cout << "action found: " << this->selectedAction->name << endl; // DEBUG
+      cout << "    action found: " << this->selectedAction->name << endl; // DEBUG
       return;
     }
   }

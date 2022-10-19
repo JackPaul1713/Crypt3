@@ -6,8 +6,9 @@
 
 using namespace std;
 
-void Encrypt::crypt(char*& data, int& dataLength, string name, FILETIME created, FILETIME modified, FILETIME accessed, char* key, int keyLength)
+void Encrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed, char* key, int keyLength)
 {
+  cout << "    modifying data" << endl; //DEBUG
   // variables:
   Key enkey(key, keyLength); // encryption key
   Cypher cypher(enkey);
@@ -15,9 +16,7 @@ void Encrypt::crypt(char*& data, int& dataLength, string name, FILETIME created,
   if(full)
   {
     condenceData(data, dataLength, name, created, modified, accessed);
-    cout << "data condenced" << endl; // DEBUG
   }
   // encrypt:
   cypher.encrypt(data, dataLength);
-  cout << "data encrypted" << endl; // DEBUG
 }

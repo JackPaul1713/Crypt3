@@ -3,25 +3,26 @@
 #include <filesystem>
 #include <stdio.h>
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <cstring>
 
 using namespace std;
 
-void valid(std::string file)
+bool valid(std::string file)
 {
-  return;
+  for(int i = 0; i < file.size(); i++)
+    if(file[i] < 32 && file[i] != 127)
+      return false;
+  return true;
 }
-void exists(std::string file)
+bool exists(std::string file)
 {
-  // std::ifstream check(file);
-  // if (!check)
-  // {
-  //   return false;
-  // }
-  // return true;
-  return;
+  std::ifstream check(file);
+  if (!check)
+  {
+    return false;
+  }
+  return true;
 }
 int fileLength(string file)
 {

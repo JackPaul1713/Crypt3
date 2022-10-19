@@ -4,19 +4,21 @@
 #include <cstring>
 #include "Crypt.h"
 #include "../resources/fileops.h"
+#include "../resources/random.h"
 
 using namespace std;
 
 //// actions ////
 void Crypt::execute(vector<string> arguments) // executes action
 {
-  cout << "executing action" << endl; // DEBUG
+  cout << "  executing action" << endl; // DEBUG
   // variables:
   char* key;
   int keyLength;
   char* data;
   int dataLength;
-  string name;
+  string name = this->inputFile;
+  string error; // error message
   FILETIME created;
   FILETIME modified;
   FILETIME accessed;
@@ -30,29 +32,42 @@ void Crypt::execute(vector<string> arguments) // executes action
   }
   else
   {
+    if(!exists(this->key)) // if file does not exist
+    {
+      error = this->key + " does not exist";
+      cout << "ERROR: " << error << endl;
+      throw std::runtime_error(error);
+    }
     key = readFile(this->key); // load key from file
     keyLength = fileLength(this->key);
   }
-  loadData(this->inputFile, data, dataLength, name, created, modified, accessed); // load data
-  cout << "data loaded" << endl; // DEBUG
+  loadData(this->inputFile, data, dataLength, created, modified, accessed); // load data
+  cout << "      name: " << name << endl; // DEBUG
+  cout << "      created time: " << created.dwHighDateTime << " " << created.dwLowDateTime << endl; // DEBUG
+  cout << "      modified time: " << modified.dwHighDateTime << " " << modified.dwLowDateTime << endl; // DEBUG
+  cout << "      accessed time: " << accessed.dwHighDateTime << " " << accessed.dwLowDateTime << endl; // DEBUG
   // modify data:
   crypt(data, dataLength, name, created, modified, accessed, key, keyLength);
-  cout << "data modified" << endl; // DEBUG
+  cout << "      name: " << name << endl; // DEBUG
+  cout << "      created time: " << created.dwHighDateTime << " " << created.dwLowDateTime << endl; // DEBUG
+  cout << "      modified time: " << modified.dwHighDateTime << " " << modified.dwLowDateTime << endl; // DEBUG
+  cout << "      accessed time: " << accessed.dwHighDateTime << " " << accessed.dwLowDateTime << endl; // DEBUG
   // output data:
-  if(this->output)
-  {
-    downloadData(this->outputFile, data, dataLength, name, created, modified, accessed); // write data to file
-    cout << "data downloaded" << endl; // DEBUG
-  }
-  else if(this->ghost)
+  if(this->ghost)
   {
     cout << data << endl; // output data to consel
-    cout << "data output" << endl; // DEBUG
+    cout << "    data output" << endl; // DEBUG
+  }
+  else if(this->output)
+  {
+    downloadData(this->outputFile, data, dataLength, created, modified, accessed); // write data to file
+    cout << "    data downloaded" << endl; // DEBUG
   }
   else
   {
-    downloadData(this->inputFile, data, dataLength, name, created, modified, accessed); // overwrite data to file
-    cout << "data downloaded (overwriten)" << endl; // DEBUG
+    downloadData(this->inputFile, data, dataLength, created, modified, accessed); // overwrite data to file
+    renameFile(this->inputFile, name);
+    cout << "    data downloaded (overwriten)" << endl; // DEBUG
   }
   // cleanup:
   this->reset();
@@ -65,7 +80,7 @@ void Crypt::initiate()
 }
 void Crypt::activate()
 {
-  cout << "activating flags" << endl; // DEBUG
+  cout << "    activating flags" << endl; // DEBUG
   // variables:
   string error = "";
   // activate flags:
@@ -93,7 +108,6 @@ void Crypt::activate()
   // activate values:
   if(this->output)
   {
-    cout << "output = true" << endl; // DEBUG
     // check:
     if(this->values.size() < 3)
     {
@@ -114,7 +128,6 @@ void Crypt::activate()
   }
   else
   {
-    cout << "output = false" << endl; // DEBUG
     // check:
     if(this->values.size() < 2)
     {
@@ -145,29 +158,43 @@ void Crypt::reset()
   output = false;
   tkey = false;
 }
-void Crypt::loadData(string file, char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // TODO
+void Crypt::loadData(string file, char*& data, int& length, FILETIME& created, FILETIME& modified, FILETIME& accessed) // TODO
 {
-  name = file; // get only end of file path // TODO
+  cout << "    loading data" << endl; // DEBUG
+  string error;
+  if(!exists(file)) // if file does not exist
+  {
+    error = file + " does not exist";
+    cout << "ERROR: " << error << endl;
+    throw std::runtime_error(error);
+  }
   data = readFile(file);
   length = fileLength(file);
   getFileTimes(file, created, modified, accessed);
 }
-void Crypt::downloadData(string file, char* data, int length, string name, FILETIME created, FILETIME modified, FILETIME accessed)
+void Crypt::downloadData(string file, char* data, int length, FILETIME created, FILETIME modified, FILETIME accessed)
 {
+  cout << "    downloading data" << endl; // DEBUG
   writeFile(file, data, length);
   setFileTimes(file, created, modified, accessed);
-  renameFile(file, name);
 }
 void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties inside file data // TODO
 {
+  cout << "      condenceing data" << endl; // DEBUG
   // variables:
   int pos = 0; // position in new data
   int nameLength = name.length(); // length of name
   int newLength = nameLength + 1 + 4 * 2 * 3 + length; // new data length
   char* newData = new char[newLength]; // new data
+  string newName = "";
   FILETIME blank; // empty file time
-  blank.dwLowDateTime = 0;
-  blank.dwHighDateTime = 0;
+  // set :
+  for(int i = 0; i < 16; i++)
+  {
+    newName = newName + randomFileChar(name[i]);
+  }
+  blank.dwLowDateTime = 0xF06C58F0;
+  blank.dwHighDateTime = 0x7FFF35f4;
   // condence:
   for(int i = 0; i < nameLength; i++) // loop through characters in name
   {
@@ -196,7 +223,7 @@ void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& creat
     pos++;
   }
   // clear file data:
-  name = "";
+  name = newName;
   created = blank;
   modified = blank;
   accessed = blank;
@@ -207,14 +234,23 @@ void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& creat
 }
 void Crypt::expandData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties back outside file data // TODO
 {
+  cout << "      expanding data" << endl; // DEBUG
   // variables:
   int pos = 0; // position in new data
   int newLength; // length of new data
   char* newData; // new data
+  string error; // error message
   // expand:
   name = "";
   while(data[pos] != ':') // iterate through characters in name
   {
+    // catch:
+    if(data[pos] < 32 && data[pos] != 127) // if not enough bytes left for file time
+    {
+      error = "invalid contained file data";
+      cout << "ERROR: "<< error << endl;
+      throw std::runtime_error(error);
+    }
     name.push_back(data[pos]); // get name from data
     pos++;
   }

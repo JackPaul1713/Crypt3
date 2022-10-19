@@ -13,7 +13,6 @@ class Crypt3: public Command
   private:
     // helpers:
     void initiate() {
-      std::cout << "initiating crypt3 command" << std::endl; // DEBUG
       name = "crypt3"; this->actions = {new Encrypt, new Decrypt, new Help};} // loads preset data
   public:
     // constructors:

@@ -1,3 +1,4 @@
+#include <iostream> // DEBUG
 #include <string>
 #include "Decrypt.h"
 #include "../Cypher.h"
@@ -5,8 +6,9 @@
 
 using namespace std;
 
-void Decrypt::crypt(char*& data, int& dataLength, string name, FILETIME created, FILETIME modified, FILETIME accessed, char* key, int keyLength)
+void Decrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed, char* key, int keyLength)
 {
+  cout << "    modifying data" << endl; //DEBUG
   // variables:
   Key dekey(key, keyLength); // decryption key
   Cypher cypher(dekey);
