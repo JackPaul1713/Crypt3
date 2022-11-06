@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void Decrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed, char* key, int keyLength)
+void Decrypt::crypt(char*& data, int& dataLength, char* key, int keyLength)
 {
   cout << "    modifying data" << endl; //DEBUG
   // variables:
@@ -20,5 +20,4 @@ void Decrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& create
     checkData(data, dataLength);
     debuffData(data, dataLength);
   }
-  // if(full) expandData(data, dataLength, name, created, modified, accessed);
 }

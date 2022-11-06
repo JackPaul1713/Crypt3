@@ -31,7 +31,7 @@ void Command::process(vector<string>& arguments)
     {
       if(found) // catch
       {
-        cout << "ERROR: "<< "too many actions" << endl;
+        cout << "ERROR: " << "too many actions" << endl;
         exit(1);
       }
       name = arguments[i];
@@ -43,7 +43,7 @@ void Command::process(vector<string>& arguments)
   }
   if(!found) // catch
   {
-    cout << "ERROR: "<< "no action" << endl;
+    cout << "ERROR: " << "no action" << endl;
     exit(1);
   }
   // find action:
@@ -57,6 +57,6 @@ void Command::process(vector<string>& arguments)
     }
   }
   // catch:
-  cout << "ERROR: "<< "invalid action: " << endl;
+  cout << "ERROR: " << "invalid action: " << endl;
   exit(1);
 }

@@ -8,7 +8,7 @@ class Encrypt: public Crypt
 {
   protected:
     // helpers:
-    void crypt(char*& data, int& dataLength, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed, char* key, int keyLength);
+    void crypt(char*& data, int& dataLength, char* key, int keyLength);
   public:
     // constructors:
     Encrypt() {initiate();} // default

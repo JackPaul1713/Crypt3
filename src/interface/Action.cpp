@@ -13,7 +13,7 @@ void Action::process(std::vector<string>& arguments)
   cout << "    processing arguments" << endl; // DEBUG
   // variables:
   vector<string> names; // flag names
-  // find names and values:
+  // find flag names and values:
   for(int i = 0; i < arguments.size(); i++)
   {
     if(arguments[i][0] == '-') // if argument is a flag name
@@ -44,17 +44,15 @@ void Action::process(std::vector<string>& arguments)
     }
   }
   // check flag incompatibilities:
-  for(int i = 0; i < this->selectedFlags.size(); i++) // loop through selected flags
+  for(Flag flag0: this->selectedFlags) // loop through selected flags
   {
-    for(int j = 0; j < this->selectedFlags.size(); j++) // loop through selected flags
+    for(char incomp0: flag0.getIncompatibilities()) // loop through incompatibilities
     {
-      for(int k = 0; k < this->selectedFlags[i].getIncompatibilities().size(); k++) // loop through incompatibilities
+      for(Flag flag1: this->selectedFlags) // loop through selected flags
       {
-        if(this->selectedFlags[j].getLetter() == selectedFlags[i].getIncompatibilities()[k]) // if selected flag is incompatibile flag
+        if(flag1.getLetter() == incomp0) // if flag is incompatibile flag
         {
-          string sflag(1, this->selectedFlags[i].getLetter()); // selected flag
-          string iflag(1, this->selectedFlags[j].getLetter()); // incompatible flag
-          cout << "ERROR: "<< "incompatibile flags: " << sflag << ", " << iflag << endl;
+          cout << "ERROR: " << "incompatibile flags: " << flag0.getLetter() << ", " << flag1.getLetter() << endl;
           exit(1);
         }
       }

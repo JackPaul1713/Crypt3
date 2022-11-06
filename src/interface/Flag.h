@@ -16,7 +16,9 @@ class Flag
   public:
     // constructors:
     Flag(): name(), letter(), valued(), value(), incompatibilities() {} // default
-    Flag(std::string name, char letter, bool valued = false, std::string value = "", std::vector<char> incompatibilities = {}): name(name), letter(letter), valued(valued), value(value), incompatibilities(incompatibilities) {} // full
+    Flag(std::string name, char letter): name(name), letter(letter), valued(false), value(""), incompatibilities({}) {} // full
+    Flag(std::string name, char letter, std::vector<char> incompatibilities): name(name), letter(letter), valued(false), value(""), incompatibilities(incompatibilities) {} // incompatibile
+    Flag(std::string name, char letter, bool valued, std::string value, std::vector<char> incompatibilities): name(name), letter(letter), valued(valued), value(value), incompatibilities(incompatibilities) {} // valued
     // destructor:
     ~Flag() {}
     // accessors:
