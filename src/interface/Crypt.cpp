@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 #include <string>
@@ -18,7 +19,6 @@ void Crypt::execute(vector<string> arguments) // executes action
   char* data;
   int dataLength;
   string name = this->inputFile;
-  string error; // error message
   FILETIME created;
   FILETIME modified;
   FILETIME accessed;
@@ -34,24 +34,15 @@ void Crypt::execute(vector<string> arguments) // executes action
   {
     if(!exists(this->key)) // if file does not exist
     {
-      error = this->key + " does not exist";
-      cout << "ERROR: " << error << endl;
-      throw std::runtime_error(error);
+      cout << "ERROR: " << " does not exist" << endl;
+      exit(1);
     }
     key = readFile(this->key); // load key from file
     keyLength = fileLength(this->key);
   }
   loadData(this->inputFile, data, dataLength, created, modified, accessed); // load data
-  cout << "      name: " << name << endl; // DEBUG
-  cout << "      created time: " << created.dwHighDateTime << " " << created.dwLowDateTime << endl; // DEBUG
-  cout << "      modified time: " << modified.dwHighDateTime << " " << modified.dwLowDateTime << endl; // DEBUG
-  cout << "      accessed time: " << accessed.dwHighDateTime << " " << accessed.dwLowDateTime << endl; // DEBUG
   // modify data:
   crypt(data, dataLength, name, created, modified, accessed, key, keyLength);
-  cout << "      name: " << name << endl; // DEBUG
-  cout << "      created time: " << created.dwHighDateTime << " " << created.dwLowDateTime << endl; // DEBUG
-  cout << "      modified time: " << modified.dwHighDateTime << " " << modified.dwLowDateTime << endl; // DEBUG
-  cout << "      accessed time: " << accessed.dwHighDateTime << " " << accessed.dwLowDateTime << endl; // DEBUG
   // output data:
   if(this->ghost)
   {
@@ -76,23 +67,21 @@ void Crypt::execute(vector<string> arguments) // executes action
 //// helpers ////
 void Crypt::initiate()
 {
-  this->flags = {Flag("directory", 'd'), Flag("full", 'f', {'g'}), Flag("ghost", 'g', {'f'}), Flag("output", 'o'), Flag("tkey", 't')};
+  this->flags = {Flag("safe", 's'), Flag("directory", 'd'), Flag("ghost", 'g', {'o'}), Flag("output", 'o', {'g'}), Flag("tkey", 't')};
 }
 void Crypt::activate()
 {
   cout << "    activating flags" << endl; // DEBUG
-  // variables:
-  string error = "";
   // activate flags:
   for(int i = 0; i < this->selectedFlags.size(); i++)
   {
     switch(this->selectedFlags[i].getLetter())
     {
+      case 's':
+        this->safe = true;
+        break;
       case 'd':
         this->directory = true;
-        break;
-      case 'f':
-        this->full = true;
         break;
       case 'g':
         this->ghost = true;
@@ -111,15 +100,13 @@ void Crypt::activate()
     // check:
     if(this->values.size() < 3)
     {
-      error = "too few values";
-      cout << "ERROR: "<< error << ": " << this->values.size() << endl;
-      throw std::runtime_error(error);
+      cout << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
+      exit(1);
     }
     if(this->values.size() > 3)
     {
-      error = "too many values";
-      cout << "ERROR: "<< error << ": " << this->values.size() << endl;
-      throw std::runtime_error(error);
+      cout << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
+      exit(1);
     }
     // set values:
     this->inputFile = this->values[0];
@@ -131,15 +118,13 @@ void Crypt::activate()
     // check:
     if(this->values.size() < 2)
     {
-      error = "too few values";
-      cout << "ERROR: "<< error << ": " << this->values.size() << endl;
-      throw std::runtime_error(error);
+      cout << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
+      exit(1);
     }
     if(this->values.size() > 2)
     {
-      error = "too many values";
-      cout << "ERROR: "<< error << ": " << this->values.size() << endl;
-      throw std::runtime_error(error);
+      cout << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
+      exit(1);
     }
     // set values:
     this->inputFile = this->values[0];
@@ -149,24 +134,22 @@ void Crypt::activate()
 void Crypt::reset()
 {
   // reset attributes:
-  inputFile = "";
-  outputFile = "";
-  key = "";
-  directory = false;
-  full = false;
-  ghost = false;
-  output = false;
-  tkey = false;
+  this->inputFile = "";
+  this->outputFile = "";
+  this->key = "";
+  this->safe = false;
+  this->directory = false;
+  this->ghost = false;
+  this->output = false;
+  this->tkey = false;
 }
-void Crypt::loadData(string file, char*& data, int& length, FILETIME& created, FILETIME& modified, FILETIME& accessed) // TODO
+void Crypt::loadData(string file, char*& data, int& length, FILETIME& created, FILETIME& modified, FILETIME& accessed)
 {
   cout << "    loading data" << endl; // DEBUG
-  string error;
   if(!exists(file)) // if file does not exist
   {
-    error = file + " does not exist";
-    cout << "ERROR: " << error << endl;
-    throw std::runtime_error(error);
+    cout << "ERROR: " << " does not exist" << endl;
+    exit(1);
   }
   data = readFile(file);
   length = fileLength(file);
@@ -178,7 +161,46 @@ void Crypt::downloadData(string file, char* data, int length, FILETIME created, 
   writeFile(file, data, length);
   setFileTimes(file, created, modified, accessed);
 }
-void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties inside file data // TODO
+void Crypt::buffData(char*& data, int& length) // adds two bytes to the front of data
+{
+  // variables:
+  int newLength = length + 2;
+  char* newData = new char[newLength];
+  // buffer:
+  newData[0] = randomInt(0) % 4;
+  newData[1] = randomInt(0) % 4;
+  // fill:
+  for(int i = 0; i < length; i++)
+    newData[i+2] = data[i];
+  // return:
+  delete[] data;
+  data = newData;
+  length = newLength;
+}
+void Crypt::debuffData(char*& data, int& length) // removes two bytes from the front of data
+{
+  // variables:
+  int newLength = length - 2;
+  char* newData = new char[newLength];
+  // fill:
+  for(int i = 0; i < newLength; i++)
+    newData[i] = data[i+2];
+  // return:
+  delete[] data;
+  data = newData;
+  length = newLength;
+}
+void Crypt::checkData(char*& data, int& length) // checks two bytes at the front of data
+{
+  // check:
+  if(length < 2 || ((unsigned char)data[0] >= 4 || (unsigned char)data[1] >= 4))
+  {
+    cout << "ERROR: "<< "invalid decryption" << endl;
+    exit(1);
+  }
+}
+/*
+void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties inside file data
 {
   cout << "      condenceing data" << endl; // DEBUG
   // variables:
@@ -232,7 +254,7 @@ void Crypt::condenceData(char*& data, int& length, string& name, FILETIME& creat
   length = newLength;
   data = newData;
 }
-void Crypt::expandData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties back outside file data // TODO
+void Crypt::expandData(char*& data, int& length, string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed) // move file properties back outside file data
 {
   cout << "      expanding data" << endl; // DEBUG
   // variables:
@@ -245,13 +267,13 @@ void Crypt::expandData(char*& data, int& length, string& name, FILETIME& created
   while(data[pos] != ':') // iterate through characters in name
   {
     // catch:
-    if(data[pos] < 32 && data[pos] != 127) // if not enough bytes left for file time
+    if((data[pos] < 32 && data[pos] != 127) && length > pos + 24) // if invalid file character
     {
       error = "invalid contained file data";
       cout << "ERROR: "<< error << endl;
       throw std::runtime_error(error);
     }
-    name.push_back(data[pos]); // get name from data
+    name = name + data[pos]; // get name from data
     pos++;
   }
   pos++; // skip seperator
@@ -280,3 +302,4 @@ void Crypt::expandData(char*& data, int& length, string& name, FILETIME& created
   length = newLength;
   data = newData;
 }
+*/

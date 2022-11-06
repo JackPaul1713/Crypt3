@@ -1,0 +1,20 @@
+ Volume in drive C is OS
+ Volume Serial Number is C253-1CF4
+
+ Directory of C:\Users\JackPaul\OneDrive\Documents\Programs\Projects\crypt3
+
+11/06/2022  12:15 AM    <DIR>          .
+11/06/2022  12:15 AM    <DIR>          ..
+10/18/2022  11:50 PM    <DIR>          .git
+11/05/2022  11:34 PM               795 compile.txt
+11/06/2022  12:15 AM           313,856 crypt3.exe
+11/06/2022  12:15 AM           196,608 crypt3.tds
+11/05/2022  10:28 PM             1,337 README.md
+07/24/2022  08:49 PM    <DIR>          src
+11/06/2022  12:20 AM               727 test.txt
+11/05/2022  11:23 PM           229,376 testcypher.exe
+11/05/2022  11:23 PM           131,072 testcypher.tds
+11/06/2022  12:21 AM                 0 testkey
+11/05/2022  11:23 PM    <DIR>          tests
+               8 File(s)        873,771 bytes
+               5 Dir(s)  298,078,601,216 bytes free

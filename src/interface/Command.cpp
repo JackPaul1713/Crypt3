@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -22,7 +23,6 @@ void Command::process(vector<string>& arguments)
   // variables:
   string name; // action name
   bool found = false; // argument is found
-  string error; // error message
   // find name:
   arguments.erase(arguments.begin()+0); // remove first argument
   for(int i = 0; i < arguments.size(); i++) // loop through command arguments
@@ -31,9 +31,8 @@ void Command::process(vector<string>& arguments)
     {
       if(found) // catch
       {
-        error = "too many actions";
-        cout << "ERROR: "<< error << endl;
-        throw std::runtime_error(error);
+        cout << "ERROR: "<< "too many actions" << endl;
+        exit(1);
       }
       name = arguments[i];
       cout << "    action name found: " << arguments[i] << endl; // DEBUG
@@ -44,9 +43,8 @@ void Command::process(vector<string>& arguments)
   }
   if(!found) // catch
   {
-    error = "no action";
-    cout << "ERROR: "<< error << endl;
-    throw std::runtime_error(error);
+    cout << "ERROR: "<< "no action" << endl;
+    exit(1);
   }
   // find action:
   for(int i = 0; i < actions.size(); i++) // loop through actions
@@ -59,7 +57,6 @@ void Command::process(vector<string>& arguments)
     }
   }
   // catch:
-  error = "invalid action: " + name;
-  cout << "ERROR: "<< error << endl;
-  throw std::runtime_error(error);
+  cout << "ERROR: "<< "invalid action: " << endl;
+  exit(1);
 }

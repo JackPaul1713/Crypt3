@@ -1,17 +1,15 @@
 #ifndef HELP_H
 #define HELP_H
 
-#include <iostream>
+#include <vector>
+#include "Action.h"
 
+//// objects ////
 class Help: public Action
 {
   protected:
     // actions:
-    void execute(std::vector<std::string> arguments)
-    {
-      std::cout << "syntex: crypt3 /*command* *file* *key* -*flags*" << std::endl;
-      std::cout << "        crypt3 /*command* *inputfile* *outputfile* *key* -o -*flags*" << std::endl;
-    }
+    void execute(std::vector<std::string> arguments);
     // helpers:
     void initiate() {this->name = "help"; this->letter = 'h';} // loads preset data
     void activate() {} // activates input data

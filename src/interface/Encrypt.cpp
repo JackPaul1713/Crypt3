@@ -13,10 +13,11 @@ void Encrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& create
   Key enkey(key, keyLength); // encryption key
   Cypher cypher(enkey);
   // process:
-  if(full)
+  if(safe)
   {
-    condenceData(data, dataLength, name, created, modified, accessed);
+    buffData(data, dataLength);
   }
+  // if(full) condenceData(data, dataLength, name, created, modified, accessed);
   // encrypt:
   cypher.encrypt(data, dataLength);
 }

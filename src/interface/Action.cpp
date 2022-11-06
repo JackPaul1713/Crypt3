@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <algorithm>
 #include <vector>
@@ -12,7 +13,6 @@ void Action::process(std::vector<string>& arguments)
   cout << "    processing arguments" << endl; // DEBUG
   // variables:
   vector<string> names; // flag names
-  string error; // error message
   // find names and values:
   for(int i = 0; i < arguments.size(); i++)
   {
@@ -54,9 +54,8 @@ void Action::process(std::vector<string>& arguments)
         {
           string sflag(1, this->selectedFlags[i].getLetter()); // selected flag
           string iflag(1, this->selectedFlags[j].getLetter()); // incompatible flag
-          error = "incompatibile flags: " + sflag + ", " + iflag;
-          cout << "ERROR: "<< error << endl;
-          throw std::runtime_error(error);
+          cout << "ERROR: "<< "incompatibile flags: " << sflag << ", " << iflag << endl;
+          exit(1);
         }
       }
     }

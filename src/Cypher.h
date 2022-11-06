@@ -1,7 +1,9 @@
 #ifndef CYPHER_H
 #define CYPHER_H
 
+#include <functional>
 #include <vector>
+#include <string>
 #include "Key.h"
 #include "SortedIndex.h"
 
@@ -9,7 +11,9 @@ class Cypher
 {
   private:
     // attributes:
-    Key key;
+    Key key; // encryption key
+    std::string order; // encryption order
+    // bool wrapexapnd; // how to deal with too short keys
     // helpers:
     void encryptLen(char*& data, int& length); // encrypts length
     void decryptLen(char*& data, int& length); // decrypts length
@@ -17,12 +21,12 @@ class Cypher
     void decryptVal(char* data, int length); // decrypts values
     void encryptPos(char*& data, int length); // encrypts position
     void decryptPos(char*& data, int length); // decrypts position
-    template<class numb> std::vector<numb> expandKey(std::vector<numb> key, int newLength); // lengthens key
+    template<class numb> std::vector<numb> resizeKey(std::vector<numb> key, int newLength); // lengthens key
   public:
     // constructors:
-    Cypher() {} // default
-    Cypher(Key key): key(key) {} // full
-    Cypher(const Cypher& cypher): key(cypher.key) {} // copy
+    Cypher(): key(), order("lvp") {} // default
+    Cypher(Key key, std::string order="lvp"): key(key), order(order) {} // full
+    Cypher(const Cypher& cypher): key(cypher.key), order(cypher.order) {} // copy
     // destructor:
     ~Cypher() {}
     // encryption:
@@ -30,28 +34,31 @@ class Cypher
     void decrypt(char*& bytes, int& length);
     // friends:
     friend void swap(Cypher& cypher0, Cypher& cypher1) {swap(cypher0.key, cypher1.key);}
-    friend void debug(); // DEBUG
-    friend int compareModified(Cypher cypher, char* data, int length, char* expectedData, int expectedLength, int type); // encrypts or decrypts then compairs data, TEST
-    friend int compareFinal(char* data, int length, int type); // encrypts and decrypts then compairs data, TEST
+    friend int compareModified(Cypher cypher, char* data, int length, char* expectedData, int expectedLength, int type); // encrypts or decrypts then compairs data, TESTING
+    friend int compareFinal(char* data, int length, int type); // encrypts and decrypts then compairs data, TESTING
     // overloads:
     Cypher& operator=(Cypher cypher) {swap(*this, cypher); return(*this);} // assignment
 };
 
-template<class numb> std::vector<numb> Cypher::expandKey(std::vector<numb> key, int newLength) // lengthens a key
+template<class numb> std::vector<numb> Cypher::resizeKey(std::vector<numb> key, int newLength) // lengthens a key
 {
   // variables:
   int length = key.size();
   numb modifier = newLength; // modifier to generate new key values
-  std::vector<int> expandedKey(newLength); // expanded key
-  for(int i = 0; i < length && i < newLength; i++) expandedKey[i] = key[i]; // copy key to expanded key
+  std::vector<int> resizedKey(newLength); // resized key
+  std::hash<numb> newHashVal; // generates new values
+  // shrink key:
+  if(newLength < length) length = newLength; // if new length is less than length
+  // copy key:
+  for(int i = 0; i < length; i++) resizedKey[i] = key[i]; // copy key to resized key
   // expand key:
-  for(int i = length; i < newLength; i++) // loop through expanded key's empty values
+  for(int i = length; i < newLength; i++) // loop through resized key's empty values
   {
-    modifier = modifier + (expandedKey[i - length] * 2) + 1; // change modifier
-    expandedKey[i] = expandedKey[i - 1] + modifier; // make new key value
+    modifier = modifier + (resizedKey[i - length] * 2) + 1; // change modifier
+    resizedKey[i] = newHashVal(resizedKey[i - 1] + modifier); // make new key value
   }
   // return:
-  return(expandedKey);
+  return(resizedKey);
 }
 
 #endif

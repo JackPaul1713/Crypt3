@@ -15,8 +15,10 @@ void Decrypt::crypt(char*& data, int& dataLength, string& name, FILETIME& create
   // encrypt:
   cypher.decrypt(data, dataLength);
   // process:
-  if(full)
+  if(safe)
   {
-    expandData(data, dataLength, name, created, modified, accessed);
+    checkData(data, dataLength);
+    debuffData(data, dataLength);
   }
+  // if(full) expandData(data, dataLength, name, created, modified, accessed);
 }

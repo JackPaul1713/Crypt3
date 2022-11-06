@@ -17,8 +17,8 @@ class Crypt: public Action
     std::string inputFile;
     std::string outputFile;
     std::string key;
-    bool directory; // directory encryption
-    bool full; // full file cryption
+    bool safe; // safe file decryption
+    bool directory; // directory cryption
     bool ghost; // display only
     bool output; // output location, no overwrite
     bool tkey; // use text key
@@ -29,8 +29,11 @@ class Crypt: public Action
     void activate(); // activates input data
     void reset(); // wipes input data
     virtual void crypt(char*& data, int& dataLength, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed, char* key, int keyLength) = 0; // instantiated for either encryption or decryption
-    void condenceData(char*& data, int& length, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed); // move file data inside file
-    void expandData(char*& data, int& length, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed); // move file data back outside file
+    void buffData(char*& data, int& length); // adds two bytes to the front of data
+    void debuffData(char*& data, int& length); // removes two bytes from the front of data
+    void checkData(char*& data, int& length); // checks two bytes at the front of data
+    // void condenceData(char*& data, int& length, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed); // move file data inside file
+    // void expandData(char*& data, int& length, std::string& name, FILETIME& created, FILETIME& modified, FILETIME& accessed); // move file data back outside file
 };
 
 #endif

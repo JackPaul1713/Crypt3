@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 #include <algorithm>
 #include "Cypher.h"
 #include "Key.h"
@@ -10,15 +11,27 @@ using namespace std;
 //// encryption ////
 void Cypher::encrypt(char*& data, int& length)
 {
-  encryptLen(data, length);
-  encryptVal(data, length);
-  encryptPos(data, length);
+  for(int i = 0; i < this->order.length(); i++) // loop through encryption order
+  {
+    if(this->order[i] == 'p')
+      encryptPos(data, length);
+    else if(this->order[i] == 'v')
+      encryptVal(data, length);
+    else if(this->order[i] == 'l')
+      encryptLen(data, length);
+  }
 }
 void Cypher::decrypt(char*& data, int& length)
 {
-  decryptPos(data, length);
-  decryptVal(data, length);
-  decryptLen(data, length);
+  for(int i = this->order.length()-1; i >= 0; i--) // loop backwards through encryption order
+  {
+    if(this->order[i] == 'l')
+      decryptLen(data, length);
+    else if(this->order[i] == 'v')
+      decryptVal(data, length);
+    else if(this->order[i] == 'p')
+      decryptPos(data, length);
+  }
 }
 
 //// helpers ////
@@ -124,7 +137,7 @@ void Cypher::decryptVal(char* data, int length) // decrypts values
 void Cypher::encryptPos(char*& data, int length) // encrypts position
 {
   // variables:
-  vector<int> posKey = this->expandKey(this->key.posKey(), length); // expand position key to fit data
+  vector<int> posKey = this->resizeKey<int>(this->key.posKey(), length); // expand position key to fit data
   SortedIndex sortedIndex;
   // sort:
   sortedIndex.sort(posKey); // sort indexes by position key
@@ -134,7 +147,7 @@ void Cypher::encryptPos(char*& data, int length) // encrypts position
 void Cypher::decryptPos(char*& data, int length) // decrypts position
 {
   // variables:
-  vector<int> posKey = this->expandKey<int>(this->key.posKey(), length); // expand position key to fit data
+  vector<int> posKey = this->resizeKey<int>(this->key.posKey(), length); // expand position key to fit data
   SortedIndex sortedIndex;
   // sort:
   sortedIndex.invertedSort(posKey); // sort indexes by position key
