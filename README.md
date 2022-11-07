@@ -11,8 +11,8 @@ These functions hide the true length of the file, introduce the possibility of f
 ## Complexety
 Overall the crypt3 cypher is O(nlog2(n))
   
-The position algorithm is O(nlog2(n))
-The value algorithm is O(n)
+The position algorithm is O(nlog2(n))  
+The value algorithm is O(n)  
 The length algorithm is O(n)
   
 Where n is the length of the data.
@@ -21,16 +21,16 @@ Where n is the length of the data.
 Save the crypt3 executable, and add its location to the path environment variable.
   
 ## Usage:  
-syntex:  
-  crypt3 /*action* *file* *key* -*flags*  
-  crypt3 /*action* *inputfile* *outputfile* *key* -o -*flags*  
+Syntex:  
+  crypt3 /\*action\* \*file\* \*key\* -\*flags\*  
+  crypt3 /\*action\* \*inputfile\* \*outputfile\* \*key\* -o -\*flags\*  
   
-actions:  
+Actions:  
   encrypt e - encrypts file data  
   decrypt d - decrypts file data  
   help h - displays help  
   
-encryption decryption flags:  
+Encryption Decryption Flags:  
   safe s - prevents incorrect decryption (1/4096 chance of failure)  
   directory d - INCOMPLETE  
   output o - outputs to specifed file  
