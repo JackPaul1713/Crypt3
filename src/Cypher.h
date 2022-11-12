@@ -13,7 +13,6 @@ class Cypher
     // attributes:
     Key key; // encryption key
     std::string order; // encryption order
-    // bool wrapexapnd; // how to deal with too short keys
     // helpers:
     void encryptLen(char*& data, int& length); // encrypts length
     void decryptLen(char*& data, int& length); // decrypts length
