@@ -8,7 +8,7 @@ The length algorithm scatters a variable number of bytes into the data. The valu
 
 These functions hide the true length of the file, introduce the possibility of false bytes, and change bytes values, and scramble their positions in the data. This allows for a lot more possibilities of what the data could be. These algorithms make it very difficult to backtrack from a known encrypted file to the key used to encrypt it. Additionally the false bytes make each encrypted version of the file unique.
 
-## Complexety
+## Complexity:
 Overall the crypt3 cypher is O(nlog2(n))
 
 The position algorithm is O(nlog2(n))  
