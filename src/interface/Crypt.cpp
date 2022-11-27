@@ -49,7 +49,10 @@ void Crypt::execute(vector<string> arguments) // executes action
     downloadData(this->inputFile, data, dataLength); // overwrite data to file
     cout << "    data downloaded (overwriten)" << endl; // DEBUG
   }
+  cout << "complete" << endl; // DEBUG
   // cleanup:
+  delete[] key;
+  delete[] data;
   this->reset();
 }
 
@@ -89,12 +92,12 @@ void Crypt::activate()
     // check:
     if(this->values.size() < 3)
     {
-      cout << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
+      cerr << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
       exit(1);
     }
     if(this->values.size() > 3)
     {
-      cout << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
+      cerr << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
       exit(1);
     }
     // set values:
@@ -107,12 +110,12 @@ void Crypt::activate()
     // check:
     if(this->values.size() < 2)
     {
-      cout << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
+      cerr << "ERROR: "<< "too few values" << ": " << this->values.size() << endl;
       exit(1);
     }
     if(this->values.size() > 2)
     {
-      cout << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
+      cerr << "ERROR: "<< "too many values" << ": " << this->values.size() << endl;
       exit(1);
     }
     // set values:
@@ -137,7 +140,7 @@ void Crypt::loadData(string file, char*& data, int& length)
   cout << "    loading data" << endl; // DEBUG
   if(!exists(file)) // if file does not exist
   {
-    cout << "ERROR: file " << file << " does not exist" << endl;
+    cerr << "ERROR: file " << file << " does not exist" << endl;
     exit(1);
   }
   data = readFile(file);
@@ -182,7 +185,7 @@ void Crypt::checkData(char*& data, int& length) // checks two bytes at the front
   // check:
   if(length < 2 || ((unsigned char)data[0] >= 4 || (unsigned char)data[1] >= 4))
   {
-    cout << "ERROR: "<< "invalid decryption" << endl;
+    cerr << "ERROR: "<< "invalid decryption" << endl;
     exit(1);
   }
 }

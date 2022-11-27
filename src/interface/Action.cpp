@@ -52,7 +52,7 @@ void Action::process(std::vector<string>& arguments)
       {
         if(flag1.getLetter() == incomp0) // if flag is incompatibile flag
         {
-          cout << "ERROR: " << "incompatibile flags: " << flag0.getLetter() << ", " << flag1.getLetter() << endl;
+          cerr << "ERROR: " << "incompatibile flags: " << flag0.getLetter() << ", " << flag1.getLetter() << endl;
           exit(1);
         }
       }

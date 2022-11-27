@@ -14,4 +14,6 @@ int main(int argc, char const *argv[])
     arguments.push_back(argv[i]); // add to arguments
   // execute:
   crypt3.execute(arguments);
+  // return:
+  return(0);
 }
