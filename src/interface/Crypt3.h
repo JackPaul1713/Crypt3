@@ -12,8 +12,8 @@ class Crypt3: public Command
 {
   private:
     // helpers:
-    void initiate() {
-      name = "crypt3"; this->actions = {new Encrypt, new Decrypt, new Help};} // loads preset data
+    void initiate() {name = "crypt3"; this->actions = {new Encrypt, new Decrypt, new Help};} // loads preset data
+    void reset() {}
   public:
     // constructors:
     Crypt3() {initiate();} // default

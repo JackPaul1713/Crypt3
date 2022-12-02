@@ -21,10 +21,12 @@ void Crypt::execute(vector<string> arguments) // executes action
   // settup:
   this->process(arguments);
   // load data:
-  if(this->tkey)
+  if(this->tkey) // if text key flag use text as key
   {
-    strcpy(key, this->key.c_str()); // use text as key
     keyLength = this->key.size();
+    key = new char[keyLength];
+    for(int i = 0; i < keyLength; i++)
+      key[i] = this->key[i];
   }
   else
   {
@@ -49,7 +51,6 @@ void Crypt::execute(vector<string> arguments) // executes action
     downloadData(this->inputFile, data, dataLength); // overwrite data to file
     cout << "    data downloaded (overwriten)" << endl; // DEBUG
   }
-  cout << "complete" << endl; // DEBUG
   // cleanup:
   delete[] key;
   delete[] data;
@@ -125,6 +126,7 @@ void Crypt::activate()
 }
 void Crypt::reset()
 {
+  cout << "    reseting" << endl; // DEBUG
   // reset attributes:
   this->inputFile = "";
   this->outputFile = "";

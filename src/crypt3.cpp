@@ -15,5 +15,6 @@ int main(int argc, char const *argv[])
   // execute:
   crypt3.execute(arguments);
   // return:
+  cout << "exiting" << endl; // DEBUG
   return(0);
 }

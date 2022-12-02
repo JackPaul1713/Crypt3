@@ -17,11 +17,13 @@ bool valid(std::string file)
 }
 bool exists(std::string file)
 {
-  std::ifstream check(file);
+  ifstream check(file);
   if (!check)
   {
+    check.close();
     return false;
   }
+  check.close();
   return true;
 }
 int fileLength(string file)

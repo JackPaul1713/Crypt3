@@ -14,6 +14,7 @@ void Command::execute(std::vector<string> arguments)
   this->process(arguments); // processes and loads data
   this->selectedAction->execute(arguments); // executes action
   this->reset(); // resets processed data
+  cout << "command executed" << endl; // DEBUG
 }
 
 //// helpers ////
